@@ -73,19 +73,19 @@ void MainWindow::on_btnDeleteClass_clicked()
         return;
     } else {
         QModelIndex currentIndex = ui->tblClasses->currentIndex();
-        QString s;
-        QTextStream t(&classFile);
-        while(!t.atEnd())
+        QString outputString;
+        QTextStream textStream(&classFile);
+        while(!textStream.atEnd())
         {
-            QString line = t.readLine();
+            QString line = textStream.readLine();
             if(!line.contains(ui->tblClasses->item(currentIndex.row(), 0)->text())){
-                s.append(line + "\n");
+                outputString.append(line + "\n");
             } else {
-                s.append("\n");
+                outputString.append("\n");
             }
         }
         classFile.resize(0);
-        t << s;
+        textStream << outputString;
         classFile.close();
     }
     int row = ui->tblClasses->currentRow();
