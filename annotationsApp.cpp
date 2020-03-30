@@ -1,5 +1,9 @@
 ﻿#include "annotationsApp.h"
 #include "ui_annotationsApp.h"
+#include "graphicsscene.h"
+
+#include <QHeaderView>
+#include <QTableView>
 #include <QFile>
 #include <QTextStream>
 #include <QMessageBox>
@@ -17,7 +21,81 @@
 QString classFileName = "";
 QString currentImageDir = "";
 QRect currentImageSize {0,0,0,0};
-bool imageloaded = false;
+bool imageLoaded = false;
+
+bool classSort = false;
+bool imageSortCol1 = false;
+bool imageSortCol2 = false;
+
+
+void populateTableView(QTableWidget* thisTable, std::vector<std::pair<QString, QString>> contents, bool hasSecondCol) {
+	//reset the table
+	thisTable->clearContents();
+	thisTable->setRowCount(0);
+
+    for (unsigned int loopCount = 0; loopCount < contents.size(); loopCount++) {
+		thisTable->insertRow(thisTable->rowCount());
+		QTableWidgetItem* firstItem = new QTableWidgetItem(contents[loopCount].first);
+		firstItem->setFlags(firstItem->flags() ^ Qt::ItemIsEditable);
+		thisTable->setItem(thisTable->rowCount() - 1, 0, firstItem);
+		if (hasSecondCol) {
+			//add second col if it's the Images control
+			QTableWidgetItem* secondItem = new QTableWidgetItem(contents[loopCount].second);
+			secondItem->setFlags(secondItem->flags() ^ Qt::ItemIsEditable);
+			thisTable->setItem(thisTable->rowCount() - 1, 1, secondItem);
+		}
+
+	}
+}
+
+void bubbleSort(std::vector<std::pair<QString, QString>>& contents, bool ascending, int column){
+
+	typedef std::vector<std::string>::size_type size_type;
+	for (size_type i = 1; i < contents.size(); ++i) // for n-1 passes
+	{
+		for (size_type j = 0; j < (contents.size() - 1); ++j)
+		{
+			if (ascending) {
+				QString compareFirst = "";
+				QString compareSecond = "";
+				if (column == 0) {
+					compareFirst = contents[j].first;
+					compareSecond = contents[j + 1].first;
+				}
+				else {
+					compareFirst = contents[j].second;
+					compareSecond = contents[j + 1].second;
+				}
+				if (compareFirst > compareSecond) {
+					std::pair<QString, QString> temp = { contents[j].first, contents[j].second };
+					contents[j].first = contents[j + 1].first;
+					contents[j].second = contents[j + 1].second;
+					contents[j + 1].first = temp.first;
+					contents[j + 1].second = temp.second;
+				}
+			}
+			else {
+				QString compareFirst = "";
+				QString compareSecond = "";
+				if (column == 0) {
+					compareFirst = contents[j].first;
+					compareSecond = contents[j + 1].first;
+				}
+				else {
+					compareFirst = contents[j].second;
+					compareSecond = contents[j + 1].second;
+				}
+				if (compareFirst < compareSecond) {
+					std::pair<QString, QString> temp = { contents[j].first, contents[j].second };
+					contents[j].first = contents[j + 1].first;
+					contents[j].second = contents[j + 1].second;
+					contents[j + 1].first = temp.first;
+					contents[j + 1].second = temp.second;
+				}
+			}
+		}
+	}
+}
 
 
 void AnnotationsApp::resizeImage(){
@@ -42,7 +120,7 @@ void AnnotationsApp::resizeImage(){
             ui->gvImage->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
         }
 
-        ui->gvImage->setGeometry(0,0,newWidth, newHeight);
+        ui->gvImage->setGeometry(337,35,newWidth, newHeight);
 
 }
 
@@ -52,6 +130,44 @@ AnnotationsApp::AnnotationsApp(QWidget *parent) :
     ui(new Ui::AnnotationsApp)
 {
     ui->setupUi(this);
+    ui->gvImage->setScene(mainScene);
+
+
+    QHeaderView *classHeader = qobject_cast<QTableView *>(ui->tblClasses)->horizontalHeader();
+    connect(classHeader, &QHeaderView::sectionClicked, [this](int logicalIndex){
+
+		std::vector<std::pair<QString, QString>> contents;  //vector of pairs to store contents
+		
+		//read the conetents of the current QTableView into a vector for sorting
+		int rows = ui->tblClasses->rowCount();
+		for (int row = 0; row < rows; ++row) {
+			contents.push_back({ ui->tblClasses->item(row, 0)->text(),"" });
+		}
+			
+		bubbleSort(contents, classSort, logicalIndex);
+		populateTableView(ui->tblClasses, contents, false);
+		classSort = !classSort;
+    });
+
+    QHeaderView *imageHeader = qobject_cast<QTableView *>(ui->tblImages)->horizontalHeader();
+    connect(imageHeader, &QHeaderView::sectionClicked, [this](int logicalIndex){
+		std::vector<std::pair<QString, QString>> contents;  //vector of pairs to store contents
+
+		//read the conetents of the current QTableView into a vector for sorting
+		int rows = ui->tblImages->rowCount();
+		for (int row = 0; row < rows; ++row) {
+			contents.push_back({ ui->tblImages->item(row, 0)->text(),ui->tblImages->item(row, 1)->text() });
+		}
+		
+		if (logicalIndex == 0) {
+			bubbleSort(contents, imageSortCol1, logicalIndex);
+			imageSortCol1 = !imageSortCol1;
+		} else {
+			bubbleSort(contents, imageSortCol2, logicalIndex);
+			imageSortCol2 = !imageSortCol2;
+		}
+		populateTableView(ui->tblImages, contents, true);
+    });
 
    
 }
@@ -64,14 +180,9 @@ AnnotationsApp::~AnnotationsApp()
 void AnnotationsApp::resizeEvent(QResizeEvent* event)
 {
     QMainWindow::resizeEvent(event);
-    qDebug() << currentImageSize;
-    if(imageloaded){
+    if( mainScene->getImageLoaded() ){
         resizeImage();
     }
-
-
-
-    //ui->gvImage->fitInView(, Qt::KeepAspectRatio);
 }
 
 void AnnotationsApp::on_btnLoadImages_clicked()
@@ -85,18 +196,18 @@ void AnnotationsApp::on_btnLoadImages_clicked()
         //reset the table
         ui->tblImages->clearContents();
         ui->tblImages->setRowCount(0);
+		std::vector<std::pair<QString, QString>> contents;
+
         for ( const auto& image : images  ){
 			currentImageDir = QFileInfo(image).path();
             QString filename = QFileInfo(image).fileName();
             QDateTime filedate = QFileInfo(image).lastModified();
-            ui->tblImages->insertRow ( ui->tblImages->rowCount() );
-            QTableWidgetItem *fname = new QTableWidgetItem(filename);
-            fname->setFlags(fname->flags() ^ Qt::ItemIsEditable);
-            ui->tblImages->setItem(ui->tblImages->rowCount()-1, 0, fname);
-            QTableWidgetItem *fdate = new QTableWidgetItem(filedate.toString("dd/MM/yyyy hh:mm"));
-            fdate->setFlags(fdate->flags() ^ Qt::ItemIsEditable);
-            ui->tblImages->setItem(ui->tblImages->rowCount()-1, 1, fdate);
-        };
+
+			contents.push_back({ filename,filedate.toString("dd/MM/yyyy hh:mm") });
+		}
+
+		//populate the table
+		populateTableView(ui->tblImages, contents, true);
 
     };
 }
@@ -187,17 +298,18 @@ void AnnotationsApp::on_btnLoadClasses_clicked()
         //reset the table
         ui->tblClasses->clearContents();
         ui->tblClasses->setRowCount(0);
+		std::vector<std::pair<QString, QString>> contents;
 
         while (!in.atEnd()) {
             QString line = in.readLine();
 
-            //create a new row in the table, set the flags to make it non-editable and populate with the line from the file
-            ui->tblClasses->insertRow ( ui->tblClasses->rowCount() );
-            QTableWidgetItem *item = new QTableWidgetItem(line);
-            item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-            ui->tblClasses->setItem(ui->tblClasses->rowCount()-1, 0, item);
+            //add the contents of the file to the vector
+			contents.push_back({ line,"" });
         }
         classFile.close();
+
+		//populate the table
+		populateTableView(ui->tblClasses, contents, false);
 
         //classes are now loaded so enable the buttons to add or delete
         ui->btnAddClass->setEnabled(true);
@@ -215,26 +327,6 @@ void AnnotationsApp::on_btnSaveAnnotations_clicked()
 	QMessageBox::information(this, tr("Information"), "Not Implemented");
 }
 
-void AnnotationsApp::on_btnRectangle_clicked()
-{
-	QMessageBox::information(this, tr("Information"), "Not Implemented");
-}
-
-void AnnotationsApp::on_btnTriangle_clicked()
-{
-	QMessageBox::information(this, tr("Information"), "Not Implemented");
-}
-
-void AnnotationsApp::on_btnTrapezium_clicked()
-{
-	QMessageBox::information(this, tr("Information"), "Not Implemented");
-}
-
-void AnnotationsApp::on_btnPolygon_clicked()
-{
-	QMessageBox::information(this, tr("Information"), "Not Implemented");
-}
-
 void AnnotationsApp::on_actionExit_triggered()
 {
     QMessageBox::information(this, tr("Information"), "Not Implemented");
@@ -242,16 +334,48 @@ void AnnotationsApp::on_actionExit_triggered()
 
 void AnnotationsApp::on_tblImages_cellClicked(int row, int column)
 {
-    QModelIndex currentIndex = ui->tblImages->currentIndex();
-    //QMessageBox::information(this, tr("Information"), currentImageDir + "/" +ui->tblImages->item(currentIndex.row(), 0)->text());
-    QString imageToLoad = currentImageDir + "/" + ui->tblImages->item(currentIndex.row(), 0)->text();
 
-    QGraphicsScene *scene =  new QGraphicsScene;
+    QString imageToLoad = currentImageDir + "/" + ui->tblImages->item(row, 0)->text();
+
+
     QPixmap pix (imageToLoad);
     currentImageSize = {0,0,pix.width(),pix.height()};
-    scene->setSceneRect(0,0,pix.width(),pix.height());
-    scene->addPixmap(pix);
-    ui->gvImage->setScene(scene);
-    imageloaded = true;
+    ui->gvImage->scene()->clear();
+    ui->gvImage->scene()->setSceneRect(0,0,pix.width(),pix.height());
+    ui->gvImage->scene()->addPixmap(pix);
+    mainScene->setImageLoaded(true);
+    mainScene->setCurrentImage(pix);
     resizeImage();
+}
+
+
+
+
+
+void AnnotationsApp::on_cvShapes_currentIndexChanged(int index)
+{
+    mainScene->newShape();
+    switch(index) {
+        case 0:
+            //polygon
+            mainScene->setMaxPoints(8);
+            break;
+        case 1:
+            //polygon
+            mainScene->setMaxPoints(3);
+            break;
+        case 2:
+        case 3:
+        case 4:
+            //polygon
+            mainScene->setMaxPoints(4);
+            break;
+
+    }
+
+}
+
+void AnnotationsApp::on_tblClasses_cellClicked(int row, int column)
+{
+    mainScene->setCurrentClass(ui->tblClasses->item(row, 0)->text());
 }

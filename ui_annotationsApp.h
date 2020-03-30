@@ -12,8 +12,8 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QFormLayout>
-#include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -21,10 +21,10 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QScrollArea>
 #include <QtWidgets/QTableWidget>
-#include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QGraphicsView>
+
 
 QT_BEGIN_NAMESPACE
 
@@ -34,33 +34,33 @@ public:
     QAction *actionExit;
     QWidget *centralWidget;
     QFormLayout *formLayout;
-    QGridLayout *gridLayout_3;
+    QGridLayout *sideLayout;
     QTableWidget *tblClasses;
     QPushButton *btnLoadAnnotations;
     QPushButton *btnSaveAnnotations;
     QTableWidget *tblImages;
-    QHBoxLayout *horizontalLayout;
+    QHBoxLayout *buttonLayout;
     QPushButton *btnAddClass;
     QPushButton *btnDeleteClass;
     QPushButton *btnLoadClasses;
     QPushButton *btnLoadImages;
-    QGridLayout *gridLayout;
-    QScrollArea *scrollArea;
-    QWidget *scrollAreaWidgetContents;
+    QGridLayout *mainLayout;
+    QComboBox *cvShapes;
     QGraphicsView *gvImage;
-    QPushButton *btnTrapezium;
-    QPushButton *btnTriangle;
-    QPushButton *btnRectangle;
-    QPushButton *btnPolygon;
     QMenuBar *menuBar;
     QMenu *menuFile;
-    QToolBar *mainToolBar;
+
 
     void setupUi(QMainWindow *AnnotationsApp)
     {
         if (AnnotationsApp->objectName().isEmpty())
             AnnotationsApp->setObjectName(QString::fromUtf8("AnnotationsApp"));
         AnnotationsApp->resize(800, 600);
+        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(AnnotationsApp->sizePolicy().hasHeightForWidth());
+        AnnotationsApp->setSizePolicy(sizePolicy);
         AnnotationsApp->setMinimumSize(QSize(800, 600));
         actionExit = new QAction(AnnotationsApp);
         actionExit->setObjectName(QString::fromUtf8("actionExit"));
@@ -70,21 +70,22 @@ public:
         formLayout->setSpacing(6);
         formLayout->setContentsMargins(11, 11, 11, 11);
         formLayout->setObjectName(QString::fromUtf8("formLayout"));
-        gridLayout_3 = new QGridLayout();
-        gridLayout_3->setSpacing(6);
-        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
+        sideLayout = new QGridLayout();
+        sideLayout->setSpacing(6);
+        sideLayout->setObjectName(QString::fromUtf8("sideLayout"));
         tblClasses = new QTableWidget(centralWidget);
         if (tblClasses->columnCount() < 1)
             tblClasses->setColumnCount(1);
         QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
         tblClasses->setHorizontalHeaderItem(0, __qtablewidgetitem);
         tblClasses->setObjectName(QString::fromUtf8("tblClasses"));
-        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(tblClasses->sizePolicy().hasHeightForWidth());
-        tblClasses->setSizePolicy(sizePolicy);
+        QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Expanding);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(tblClasses->sizePolicy().hasHeightForWidth());
+        tblClasses->setSizePolicy(sizePolicy1);
         tblClasses->setMinimumSize(QSize(320, 0));
+        tblClasses->setAlternatingRowColors(true);
         tblClasses->setSelectionMode(QAbstractItemView::SingleSelection);
         tblClasses->setSelectionBehavior(QAbstractItemView::SelectRows);
         tblClasses->setShowGrid(false);
@@ -95,17 +96,17 @@ public:
         tblClasses->horizontalHeader()->setStretchLastSection(true);
         tblClasses->verticalHeader()->setVisible(false);
 
-        gridLayout_3->addWidget(tblClasses, 2, 0, 1, 1);
+        sideLayout->addWidget(tblClasses, 2, 0, 1, 1);
 
         btnLoadAnnotations = new QPushButton(centralWidget);
         btnLoadAnnotations->setObjectName(QString::fromUtf8("btnLoadAnnotations"));
 
-        gridLayout_3->addWidget(btnLoadAnnotations, 5, 0, 1, 1);
+        sideLayout->addWidget(btnLoadAnnotations, 5, 0, 1, 1);
 
         btnSaveAnnotations = new QPushButton(centralWidget);
         btnSaveAnnotations->setObjectName(QString::fromUtf8("btnSaveAnnotations"));
 
-        gridLayout_3->addWidget(btnSaveAnnotations, 4, 0, 1, 1);
+        sideLayout->addWidget(btnSaveAnnotations, 4, 0, 1, 1);
 
         tblImages = new QTableWidget(centralWidget);
         if (tblImages->columnCount() < 2)
@@ -115,8 +116,8 @@ public:
         QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
         tblImages->setHorizontalHeaderItem(1, __qtablewidgetitem2);
         tblImages->setObjectName(QString::fromUtf8("tblImages"));
-        sizePolicy.setHeightForWidth(tblImages->sizePolicy().hasHeightForWidth());
-        tblImages->setSizePolicy(sizePolicy);
+        sizePolicy1.setHeightForWidth(tblImages->sizePolicy().hasHeightForWidth());
+        tblImages->setSizePolicy(sizePolicy1);
         tblImages->setMinimumSize(QSize(320, 0));
         tblImages->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         tblImages->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -135,91 +136,62 @@ public:
         tblImages->verticalHeader()->setProperty("showSortIndicator", QVariant(false));
         tblImages->verticalHeader()->setStretchLastSection(false);
 
-        gridLayout_3->addWidget(tblImages, 0, 0, 1, 1);
+        sideLayout->addWidget(tblImages, 0, 0, 1, 1);
 
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setSpacing(6);
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        buttonLayout = new QHBoxLayout();
+        buttonLayout->setSpacing(6);
+        buttonLayout->setObjectName(QString::fromUtf8("buttonLayout"));
         btnAddClass = new QPushButton(centralWidget);
         btnAddClass->setObjectName(QString::fromUtf8("btnAddClass"));
         btnAddClass->setEnabled(false);
 
-        horizontalLayout->addWidget(btnAddClass);
+        buttonLayout->addWidget(btnAddClass);
 
         btnDeleteClass = new QPushButton(centralWidget);
         btnDeleteClass->setObjectName(QString::fromUtf8("btnDeleteClass"));
         btnDeleteClass->setEnabled(false);
 
-        horizontalLayout->addWidget(btnDeleteClass);
+        buttonLayout->addWidget(btnDeleteClass);
 
         btnLoadClasses = new QPushButton(centralWidget);
         btnLoadClasses->setObjectName(QString::fromUtf8("btnLoadClasses"));
 
-        horizontalLayout->addWidget(btnLoadClasses);
+        buttonLayout->addWidget(btnLoadClasses);
 
 
-        gridLayout_3->addLayout(horizontalLayout, 3, 0, 1, 1);
+        sideLayout->addLayout(buttonLayout, 3, 0, 1, 1);
 
         btnLoadImages = new QPushButton(centralWidget);
         btnLoadImages->setObjectName(QString::fromUtf8("btnLoadImages"));
-        QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(btnLoadImages->sizePolicy().hasHeightForWidth());
-        btnLoadImages->setSizePolicy(sizePolicy1);
+        sizePolicy.setHeightForWidth(btnLoadImages->sizePolicy().hasHeightForWidth());
+        btnLoadImages->setSizePolicy(sizePolicy);
         btnLoadImages->setMinimumSize(QSize(320, 0));
 
-        gridLayout_3->addWidget(btnLoadImages, 1, 0, 1, 1);
+        sideLayout->addWidget(btnLoadImages, 1, 0, 1, 1);
 
 
-        formLayout->setLayout(0, QFormLayout::LabelRole, gridLayout_3);
+        formLayout->setLayout(0, QFormLayout::LabelRole, sideLayout);
 
-        gridLayout = new QGridLayout();
-        gridLayout->setSpacing(6);
-        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        scrollArea = new QScrollArea(centralWidget);
-        scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
-        scrollArea->setWidgetResizable(true);
-        scrollAreaWidgetContents = new QWidget();
-        scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 450, 516));
-        gvImage = new QGraphicsView(scrollAreaWidgetContents);
+        mainLayout = new QGridLayout();
+        mainLayout->setSpacing(6);
+        mainLayout->setObjectName(QString::fromUtf8("mainLayout"));
+        cvShapes = new QComboBox(centralWidget);
+        cvShapes->addItem(QString());
+        cvShapes->addItem(QString());
+        cvShapes->addItem(QString());
+        cvShapes->addItem(QString());
+        cvShapes->addItem(QString());
+        cvShapes->setObjectName(QString::fromUtf8("cvShapes"));
+
+        mainLayout->addWidget(cvShapes, 0, 0, 1, 2);
+
+        gvImage = new QGraphicsView(centralWidget);
         gvImage->setObjectName(QString::fromUtf8("gvImage"));
-        gvImage->setGeometry(QRect(0, 0, 451, 481));
-        scrollArea->setWidget(scrollAreaWidgetContents);
 
-        gridLayout->addWidget(scrollArea, 1, 0, 1, 7);
-
-        btnTrapezium = new QPushButton(centralWidget);
-        btnTrapezium->setObjectName(QString::fromUtf8("btnTrapezium"));
-        sizePolicy1.setHeightForWidth(btnTrapezium->sizePolicy().hasHeightForWidth());
-        btnTrapezium->setSizePolicy(sizePolicy1);
-
-        gridLayout->addWidget(btnTrapezium, 0, 1, 1, 1);
-
-        btnTriangle = new QPushButton(centralWidget);
-        btnTriangle->setObjectName(QString::fromUtf8("btnTriangle"));
-        sizePolicy1.setHeightForWidth(btnTriangle->sizePolicy().hasHeightForWidth());
-        btnTriangle->setSizePolicy(sizePolicy1);
-
-        gridLayout->addWidget(btnTriangle, 0, 2, 1, 1);
-
-        btnRectangle = new QPushButton(centralWidget);
-        btnRectangle->setObjectName(QString::fromUtf8("btnRectangle"));
-        sizePolicy1.setHeightForWidth(btnRectangle->sizePolicy().hasHeightForWidth());
-        btnRectangle->setSizePolicy(sizePolicy1);
-
-        gridLayout->addWidget(btnRectangle, 0, 0, 1, 1);
-
-        btnPolygon = new QPushButton(centralWidget);
-        btnPolygon->setObjectName(QString::fromUtf8("btnPolygon"));
-        sizePolicy1.setHeightForWidth(btnPolygon->sizePolicy().hasHeightForWidth());
-        btnPolygon->setSizePolicy(sizePolicy1);
-
-        gridLayout->addWidget(btnPolygon, 0, 3, 1, 1);
+        mainLayout->addWidget(gvImage, 1, 0, 1, 1);
 
 
-        formLayout->setLayout(0, QFormLayout::FieldRole, gridLayout);
+        formLayout->setLayout(0, QFormLayout::FieldRole, mainLayout);
 
         AnnotationsApp->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(AnnotationsApp);
@@ -228,9 +200,14 @@ public:
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         AnnotationsApp->setMenuBar(menuBar);
-        mainToolBar = new QToolBar(AnnotationsApp);
-        mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
-        AnnotationsApp->addToolBar(Qt::TopToolBarArea, mainToolBar);
+        QWidget::setTabOrder(tblImages, btnLoadImages);
+        QWidget::setTabOrder(btnLoadImages, tblClasses);
+        QWidget::setTabOrder(tblClasses, btnAddClass);
+        QWidget::setTabOrder(btnAddClass, btnDeleteClass);
+        QWidget::setTabOrder(btnDeleteClass, btnLoadClasses);
+        QWidget::setTabOrder(btnLoadClasses, btnSaveAnnotations);
+        QWidget::setTabOrder(btnSaveAnnotations, btnLoadAnnotations);
+        QWidget::setTabOrder(btnLoadAnnotations, cvShapes);
 
         menuBar->addAction(menuFile->menuAction());
         menuFile->addAction(actionExit);
@@ -257,10 +234,12 @@ public:
         btnDeleteClass->setText(QCoreApplication::translate("AnnotationsApp", "Delete a Class", nullptr));
         btnLoadClasses->setText(QCoreApplication::translate("AnnotationsApp", "Load Classes", nullptr));
         btnLoadImages->setText(QCoreApplication::translate("AnnotationsApp", "Load Images", nullptr));
-        btnTrapezium->setText(QCoreApplication::translate("AnnotationsApp", "Trapezium", nullptr));
-        btnTriangle->setText(QCoreApplication::translate("AnnotationsApp", "Triangle", nullptr));
-        btnRectangle->setText(QCoreApplication::translate("AnnotationsApp", "Rectangle", nullptr));
-        btnPolygon->setText(QCoreApplication::translate("AnnotationsApp", "Polygon", nullptr));
+        cvShapes->setItemText(0, QCoreApplication::translate("AnnotationsApp", "Polygon", nullptr));
+        cvShapes->setItemText(1, QCoreApplication::translate("AnnotationsApp", "Triangle", nullptr));
+        cvShapes->setItemText(2, QCoreApplication::translate("AnnotationsApp", "Trapezium", nullptr));
+        cvShapes->setItemText(3, QCoreApplication::translate("AnnotationsApp", "Rectangle", nullptr));
+        cvShapes->setItemText(4, QCoreApplication::translate("AnnotationsApp", "Square", nullptr));
+
         menuFile->setTitle(QCoreApplication::translate("AnnotationsApp", "File", nullptr));
     } // retranslateUi
 

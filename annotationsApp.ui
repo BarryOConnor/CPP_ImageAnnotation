@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>926</width>
-    <height>997</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -28,7 +28,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QFormLayout" name="formLayout">
     <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout_3">
+     <layout class="QGridLayout" name="sideLayout">
       <item row="2" column="0">
        <widget class="QTableWidget" name="tblClasses">
         <property name="sizePolicy">
@@ -42,6 +42,9 @@
           <width>320</width>
           <height>0</height>
          </size>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
         </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::SingleSelection</enum>
@@ -166,7 +169,7 @@
        </widget>
       </item>
       <item row="3" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QHBoxLayout" name="buttonLayout">
         <item>
          <widget class="QPushButton" name="btnAddClass">
           <property name="enabled">
@@ -218,86 +221,38 @@
      </layout>
     </item>
     <item row="0" column="1">
-     <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0">
-      <item row="0" column="2">
-       <widget class="QPushButton" name="btnTriangle">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Triangle</string>
-        </property>
+     <layout class="QGridLayout" name="mainLayout" columnstretch="0,0">
+      <item row="0" column="0" colspan="2">
+       <widget class="QComboBox" name="cvShapes">
+        <item>
+         <property name="text">
+          <string>Polygon</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Triangle</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Trapezium</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Rectangle</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Square</string>
+         </property>
+        </item>
        </widget>
       </item>
-      <item row="0" column="3">
-       <widget class="QPushButton" name="btnPolygon">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Polygon</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QPushButton" name="btnRectangle">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Rectangle</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="btnTrapezium">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Trapezium</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="4">
-       <widget class="QGraphicsView" name="gvImage">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>452</width>
-          <height>518</height>
-         </size>
-        </property>
-        <property name="acceptDrops">
-         <bool>false</bool>
-        </property>
-        <property name="sizeAdjustPolicy">
-         <enum>QAbstractScrollArea::AdjustToContents</enum>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-        </property>
-        <property name="dragMode">
-         <enum>QGraphicsView::ScrollHandDrag</enum>
-        </property>
-       </widget>
+      <item row="1" column="0">
+       <widget class="QGraphicsView" name="gvImage"/>
       </item>
      </layout>
     </item>
@@ -308,7 +263,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>926</width>
+     <width>800</width>
      <height>21</height>
     </rect>
    </property>
@@ -320,14 +275,6 @@
    </widget>
    <addaction name="menuFile"/>
   </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
@@ -335,6 +282,17 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>tblImages</tabstop>
+  <tabstop>btnLoadImages</tabstop>
+  <tabstop>tblClasses</tabstop>
+  <tabstop>btnAddClass</tabstop>
+  <tabstop>btnDeleteClass</tabstop>
+  <tabstop>btnLoadClasses</tabstop>
+  <tabstop>btnSaveAnnotations</tabstop>
+  <tabstop>btnLoadAnnotations</tabstop>
+  <tabstop>cvShapes</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

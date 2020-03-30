@@ -25,20 +25,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         annotationsApp.cpp \
+        graphicsscene.cpp \
         main.cpp
 
 HEADERS += \
-    annotationsApp.h
+    annotationsApp.h \
+    graphicsscene.h
+
 
 FORMS += \
     annotationsApp.ui
 
-#INCLUDEPATH += "E:/opencv-build/install/include"
-#LIBS += -L"E:/opencv-build/bin/Release/"
-#LIBS += -L"E:/opencv-build/install/x64/mingw/lib" \
-#        -lopencv_core420        \
-#        -lopencv_highgui420     \
-#        -lopencv_imgcodecs420   \
-#        -lopencv_imgproc420     \
-#        -lopencv_features2d420  \
-#        -lopencv_calib3d420*/
+
