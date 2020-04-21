@@ -8,11 +8,12 @@
 
 class controller;
 
+
+
 GraphicsScene::GraphicsScene()
 {
     imageLoaded = false;
     maxPoints = 0;
-    radius = 2;
     movingShape = -1;
     currentClass = "";
     setBackgroundBrush(Qt::gray);
@@ -22,7 +23,7 @@ GraphicsScene::GraphicsScene()
     drawingMode = isMoving;
     currentColor = Red;
 
-
+    //handle the popup menu so that it can be used by the shapes
     childPopupMenu = new QMenu;
     deleteAction = new QAction(QIcon(":images/trashcan.png"), tr("&Delete"), this);
     deleteAction->setShortcut(tr("Delete"));
@@ -32,6 +33,8 @@ GraphicsScene::GraphicsScene()
     copyAction->setStatusTip(tr("Copy annotation shape"));
     childPopupMenu->addAction(deleteAction);
     childPopupMenu->addAction(copyAction);
+
+    //connect the signals from the popup menu to the Graphics Scene which handles them
     connect(deleteAction, &QAction::triggered, this, &GraphicsScene::deleteItem);
     connect(copyAction, &QAction::triggered, this, &GraphicsScene::copyItem);
 
@@ -43,7 +46,7 @@ GraphicsScene::~GraphicsScene()
 }
 
 void GraphicsScene::setShape(int varShape){
-
+//format the coordinates of each shape
     const int TRIANGLE_MAX_POINTS = 3;
     const int RECTANGLE_MAX_POINTS = 4;
     const int TRAPEZIUM_MAX_POINTS = 4;
@@ -53,6 +56,7 @@ void GraphicsScene::setShape(int varShape){
     coords.clear();
     isNewShape = true;
     drawingMode = isDrawing;
+    currentShape = varShape;
 
     switch (varShape) {
     case Triangle:
@@ -86,9 +90,12 @@ void GraphicsScene::updateAnnotations(QVector<Annotation*> varAnnotationList)
 {
     for(int loopCount = 0; loopCount < varAnnotationList.size(); loopCount ++){
         Annotation *annotation = varAnnotationList[loopCount];
+        //create a new polygon with the information, add it to the scene and update the points
         currentPolygon = new GraphicsPolygonItem(annotation, childPopupMenu, this);
-        currentPolygon->setPen(QPen(colorMap[currentColor], 2));
         addItem(currentPolygon);
+        currentPolygon->addPoints(annotation->coordinates);
+
+        //update the scene
         currentPolygon->update();
         update();
     }
@@ -105,6 +112,7 @@ void GraphicsScene::setCurrentImage(QPixmap varImage){
 void GraphicsScene::setCurrentClass(QString varClass){
     this->currentClass = varClass;
 }
+
 bool GraphicsScene::getImageLoaded(){
     return this->imageLoaded;
 }
@@ -116,32 +124,6 @@ void GraphicsScene::reset()
     addPixmap(currentImage);
 }
 
-void GraphicsScene::drawLine(QPointF varStart, QPointF varEnd)
-{
-    line = new QGraphicsLineItem(QLineF(varStart, varEnd));
-    line->setPen(QPen(colorMap[currentColor], 2));
-    addItem(line);
-    lines.push_back(line);
-}
-
-void GraphicsScene::drawPolygon(Annotation *newAnnotation)
-{
-    currentPolygon = new GraphicsPolygonItem(newAnnotation, childPopupMenu, this);
-    currentPolygon->setPen(QPen(colorMap[newAnnotation->color], 2));
-    addItem(currentPolygon);
-    currentPolygon->update();
-    update();
-
-    emit annotationReady(newAnnotation);
-}
-
-void GraphicsScene::removeLines()
-{
-    for (int loopCount = 0; loopCount < lines.size(); loopCount ++) {
-        delete lines[loopCount];
-    }
-    lines.clear();
-}
 
 void GraphicsScene::deleteItem()
 {
@@ -150,8 +132,8 @@ void GraphicsScene::deleteItem()
     for (QGraphicsItem *item : qAsConst(allSelectedItems)) {
         GraphicsPolygonItem * selectedPoly = qgraphicsitem_cast<GraphicsPolygonItem *>(item);
         emit annotationDeleted(selectedPoly->getId());
-        removeItem(item);
-        delete item;
+        removeItem(selectedPoly);
+        delete selectedPoly;
     }
     update();
 }
@@ -159,23 +141,32 @@ void GraphicsScene::deleteItem()
 void GraphicsScene::copyItem()
 {
     QList<QGraphicsItem *> selectedItems = this->selectedItems();
-    Annotation *annotation = new Annotation();
 
     for (QGraphicsItem *item : qAsConst(selectedItems)) {
         if (item->type() == GraphicsPolygonItem::Type){
-        GraphicsPolygonItem * selectedPoly = qgraphicsitem_cast<GraphicsPolygonItem *>(item);
+            GraphicsPolygonItem * selectedPoly = qgraphicsitem_cast<GraphicsPolygonItem *>(item);
+
+            // get the annotation info out of the selected poly
+            Annotation * annotation = selectedPoly->getAnnotationInfo();
+
+            //update ID
             annotation->id = currentId;
             currentId ++;
-            annotation->classname = selectedPoly->getLabel();
-            annotation->image = "";
-            annotation->color = selectedPoly->getColor();
-            annotation->shape = currentShape;
-            annotation->coordinates = selectedPoly->getPolygon();
 
-            drawPolygon(annotation);
-         }
+            //create a new polygon with the information, add it to the scene and update points
+            currentPolygon = new GraphicsPolygonItem(annotation, childPopupMenu, this);
+            addItem(currentPolygon);
+            currentPolygon->addPoints(annotation->coordinates); // need to add the points after the item is added to the scene
+
+            // update the polygon and scene
+            currentPolygon->update();
+            update();
+
+            //signal that a new shape has been completed
+            emit annotationReady(annotation);
+        }
     }
-    update();
+
 }
 
 void GraphicsScene::itemMoved(int varId)
@@ -203,27 +194,25 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent * varEvent)
     if(varEvent->buttons() != Qt::LeftButton) return;
 
 
+
     if(drawingMode==isDrawing){
         if(isNewShape){
+
+            Annotation *annotation = new Annotation(currentId,currentClass, "",currentShape, currentColor,{});
+
+            currentId ++;
+            currentPolygon = new GraphicsPolygonItem(annotation, childPopupMenu, this);
+            addItem(currentPolygon);
             isNewShape = false;
-            drawLine(varEvent->scenePos(), varEvent->scenePos());
-        } else {
-            drawLine(coords[coords.size()-1], varEvent->scenePos());
         }
+        currentPolygon->addPoint( varEvent->scenePos());
+        currentPolygon->update();
+        update();
 
         coords.push_back(varEvent->scenePos());
         if(coords.size() == maxPoints){
-            removeLines();
-            Annotation *annotation = new Annotation();
-            annotation->id = currentId;
-            currentId ++;
-            annotation->classname = currentClass;
-            annotation->image = "";
-            annotation->color = currentColor;
-            annotation->shape = currentShape;
-            annotation->coordinates = coords;
-
-            drawPolygon(annotation);
+            isNewShape = true;
+            emit annotationReady(currentPolygon->getAnnotationInfo());
             setMode(isMoving);
         }
     }
@@ -233,19 +222,22 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent * varEvent)
 }
 
 void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * varEvent){
+
     if(movingShape!= -1){
-        QList<QGraphicsItem *> selectedItems = this->selectedItems();
+
+        QList<QGraphicsItem *> selectedItems = this->items();
 
         for (QGraphicsItem *item : qAsConst(selectedItems)) {
             if (item->type() == GraphicsPolygonItem::Type){
                 GraphicsPolygonItem * selectedPoly = qgraphicsitem_cast<GraphicsPolygonItem *>(item);
-                QPolygonF mypoly = selectedPoly->polygon();
-                for(int loopCount = 0; loopCount < mypoly.size(); loopCount++){
-                    mypoly[loopCount] = selectedPoly->mapToScene(selectedPoly->polygon()[loopCount]);
-                    qDebug() << mypoly[loopCount].x() + selectedPoly->scenePos().x();
-                    qDebug() << mypoly[loopCount].y() + selectedPoly->scenePos().y();
+                if(selectedPoly->getId()==movingShape){
+                    QPolygonF mypoly = selectedPoly->polygon();
+                    for(int loopCount = 0; loopCount < mypoly.size(); loopCount++){
+                        mypoly[loopCount] = selectedPoly->mapToScene(selectedPoly->polygon()[loopCount]);
+                        //qDebug() << mypoly;
+                    }
+                    emit updateItem(selectedPoly->getId(), mypoly);
                 }
-                emit updateItem(selectedPoly->getId(), mypoly);
             }
         }
         movingShape= -1;

@@ -1,6 +1,7 @@
 #include "GraphicsPolygonItem.h"
 #include "GraphicsScene.h"
 #include "Global_Enums.h"
+#include "GripHandle.h"
 
 #include <QDebug>
 #include <QPen>
@@ -11,41 +12,44 @@
 #include <QStyleOptionGraphicsItem>
 
 
-GraphicsPolygonItem::GraphicsPolygonItem(QPolygonF varPolygon, QString varLabel, int varId, int varShape, int varColor, QMenu *varPopupMenu, GraphicsScene *varParent)
-{
-    setFlag(QGraphicsItem::ItemIsMovable, true);
-    setFlag(QGraphicsItem::ItemIsSelectable, true);
-    setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
-    label = varLabel;
-    id = varId;
-    shapetype = varShape;
-    setPolygon(varPolygon);
-    popupMenu = varPopupMenu;
-    color = varColor;
-
-    QObject::connect(this, &GraphicsPolygonItem::itemMoved, varParent, &GraphicsScene::itemMoved);
-}
-
 GraphicsPolygonItem::GraphicsPolygonItem(Annotation *varAnnotation, QMenu *varPopupMenu, GraphicsScene *varParent)
 {
-    setFlag(QGraphicsItem::ItemIsMovable, true);
-    setFlag(QGraphicsItem::ItemIsSelectable, true);
-    setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+
     label = varAnnotation->classname;
     id = varAnnotation->id;
     shapetype = varAnnotation->shape;
-    setPolygon(QPolygonF(varAnnotation->coordinates));
     popupMenu = varPopupMenu;
     color = varAnnotation->color;
+    editMode = false;
+    parent = varParent;
+    points = {};
+    grips = {};
+
 
     QObject::connect(this, &GraphicsPolygonItem::itemMoved, varParent, &GraphicsScene::itemMoved);
+
+
+    setZValue(10);
+    setPen(QPen(colorMap[color], 2));
+    setAcceptHoverEvents(true);
+    setFlag(QGraphicsItem::ItemIsMovable, true);
+    setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+    setCursor(QCursor(Qt::PointingHandCursor));
 }
 
+GraphicsPolygonItem::~GraphicsPolygonItem(){
 
+}
 
 int GraphicsPolygonItem::getId()
 {
     return id;
+}
+
+int GraphicsPolygonItem::getShape()
+{
+    return shapetype;
 }
 
 int GraphicsPolygonItem::getColor()
@@ -56,6 +60,12 @@ int GraphicsPolygonItem::getColor()
 QString GraphicsPolygonItem::getLabel()
 {
     return label;
+}
+
+Annotation *GraphicsPolygonItem::getAnnotationInfo()
+{
+    Annotation *annotation = new Annotation(id, label, "", shapetype, color, getPolygon());
+    return annotation;
 }
 
 QPolygonF GraphicsPolygonItem::getPolygon() const
@@ -74,22 +84,15 @@ QPainterPath GraphicsPolygonItem::shape() const
 
 void GraphicsPolygonItem::paint(QPainter *varPainter, const QStyleOptionGraphicsItem *varOption, QWidget *varWidget)
 {
-    QPen pen;
-
     varPainter->setPen(QPen(colorMap[color], 2, Qt::SolidLine, Qt::SquareCap, Qt::RoundJoin));
+    varPainter->setBrush(Qt::transparent);
     varPainter->drawPolygon(polygon());
-
     QRectF measurements = boundingRect();
     varPainter->drawText(measurements.x(),measurements.y()-4,label);
 
-    if (varOption->state & QStyle::State_Selected)
-        {
-
-             varPainter->setPen(QPen(Qt::white, 1, Qt::DashLine, Qt::SquareCap, Qt::RoundJoin));
-             varPainter->drawPolygon(polygon());
-        }
 
 
+QGraphicsPolygonItem::paint(varPainter, varOption, varWidget);
 }
 
 void GraphicsPolygonItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *varEvent)
@@ -99,16 +102,94 @@ void GraphicsPolygonItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *varEv
     popupMenu->exec(varEvent->screenPos());
 }
 
+
 QVariant GraphicsPolygonItem::itemChange(GraphicsItemChange varChange, const QVariant & varValue)
 {
 
-    if (varChange == QGraphicsItem::ItemPositionChange) {
-        emit this->itemMoved(id);
+    if (varChange == QGraphicsItem::ItemPositionHasChanged) {
+        for (int i = 0; i < points.length();i++){
+            moveGrip(i,points[i]);
+        }
     }
 
-    return varValue;
+    return QGraphicsPolygonItem::itemChange(varChange, varValue);
+}
+
+
+
+void GraphicsPolygonItem::addPoint(QPointF point)
+{
+    points.append(point);
+    setPolygon(QPolygonF(points));
+    GripHandle *griphandle = new GripHandle(points.length()-1, this);
+    griphandle->setParentItem(this);
+    scene()->addItem(griphandle);
+    grips.append(griphandle);
+    griphandle->setPos(point);
+    QGraphicsPolygonItem::update();
+    prepareGeometryChange();
+}
+
+void GraphicsPolygonItem::movePoint(int varIndex, QPointF varPoint)
+{
+    if (varIndex >= 0 && varIndex < points.length()){
+         points[varIndex] = varPoint;
+         setPolygon(QPolygonF(points));
+         update();
+    }
+}
+
+void GraphicsPolygonItem::moveGrip(int varIndex, QPointF varPoint)
+{
+    if (varIndex >= 0 && varIndex < grips.length()){
+        GripHandle *item = grips[varIndex];
+        item->setEnabled(false);
+        item->setPos(varPoint);
+        item->setEnabled(true);
+        QGraphicsPolygonItem::update();
+        prepareGeometryChange();
+    }
+}
+
+void GraphicsPolygonItem::addPoints(QVector<QPointF> varPoints)
+{
+    for (int loopCount = 0; loopCount < varPoints.length(); loopCount++){
+        addPoint(varPoints[loopCount]);
+    }
+}
+
+void GraphicsPolygonItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * varEvent){
+
+    const int TRIANGLE_MAX_POINTS = 3;
+    const int RECTANGLE_MAX_POINTS = 4;
+    const int TRAPEZIUM_MAX_POINTS = 4;
+    const int POLYGON_MAX_POINTS = 8;
+    int maxPoints = 0;
+
+    switch (shapetype) {
+    case Triangle:
+        maxPoints = TRIANGLE_MAX_POINTS;
+        break;
+    case Rectangle:
+        maxPoints = RECTANGLE_MAX_POINTS;
+        break;
+    case Trapezium:
+        maxPoints = TRAPEZIUM_MAX_POINTS;
+        break;
+    case Polygon:
+        maxPoints = POLYGON_MAX_POINTS;
+        break;
+    default:
+        break;
+    }
+
+    if(points.length() == maxPoints) {
+       emit itemMoved(id);
+    }
 
 }
+
+
 
 
 

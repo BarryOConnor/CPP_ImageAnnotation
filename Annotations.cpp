@@ -13,6 +13,9 @@ Annotations::~Annotations(){
 }
 
 void Annotations::display(){
+/****************************************************
+ * display the contents of the linked List for debug
+ ***************************************************/
     Annotation *temp=new Annotation;
 
     temp=head;
@@ -25,12 +28,17 @@ void Annotations::display(){
         qDebug() << temp->color << "\t";
         qDebug() << temp->coordinates << "\t";
         temp=temp->next;
+
     }
 }
 
 
 
 void Annotations::appendAnnotation(Annotation *varAnnotation){
+/****************************************************
+ * dappend an annotation to the linkedlist
+ ***************************************************/
+
     varAnnotation->next = NULL;
     if(head == NULL){
         head = varAnnotation;
@@ -41,10 +49,14 @@ void Annotations::appendAnnotation(Annotation *varAnnotation){
         tail = varAnnotation;
     }
     length++;
+
 }
 
 
 QVector<Annotation *> Annotations::searchByImage(QString varImage) {
+/****************************************************
+ * search the list for a given image
+ ***************************************************/
     Annotation *currNode = new Annotation();
     QVector<Annotation*> annotationList;
 
@@ -59,6 +71,9 @@ QVector<Annotation *> Annotations::searchByImage(QString varImage) {
 }
 
 QVector<QString> *Annotations::uniqueImages() {
+/****************************************************
+ * return a list of unique image names within the list
+ ***************************************************/
     Annotation *currNode = new Annotation();
     QString prevImages = "";
     QVector<QString> *results = new QVector<QString>;
@@ -66,6 +81,7 @@ QVector<QString> *Annotations::uniqueImages() {
     currNode = head;
     while (currNode != NULL) {
         if(!prevImages.contains(currNode->image)){
+            // if the values match add it to the vector
             results->push_back(currNode->image);
             prevImages += currNode->image;
         }
@@ -75,17 +91,23 @@ QVector<QString> *Annotations::uniqueImages() {
 }
 
 QVector<QPair<QString, QVector<Annotation *>>> *Annotations::getJSONAnnotations(QVector<QString> *varImages) {
+/****************************************************
+ * retruns a list of images and accociated shapes
+ * used to create a JSON file
+ ***************************************************/
     Annotation *currNode = new Annotation();
     QString prevImages = "";
     QVector<QPair<QString, QVector<Annotation *>>> *results = new QVector<QPair<QString, QVector<Annotation *>>>;
     QPair<QString, QVector<Annotation *>> matches = QPair<QString, QVector<Annotation *>>();
 
     for(int loopCount = 0; loopCount < varImages->size(); loopCount++) {
+        // first value is the image name
         matches.first = varImages->at(loopCount);
         matches.second.clear();
         currNode = head;
         while (currNode != NULL) {
             if(currNode->image == varImages->at(loopCount)){
+                //add the node to the vector since ti is associated with the given image
                 matches.second.push_back(currNode);
                 prevImages += currNode->image;
             }
@@ -98,6 +120,9 @@ QVector<QPair<QString, QVector<Annotation *>>> *Annotations::getJSONAnnotations(
 
 
 bool Annotations::deleteWithId(int varId){
+/****************************************************
+ * delete an annotation with a specified ID
+ ***************************************************/
     Annotation *currNode = new Annotation;
     Annotation *prevNode = new Annotation;
 
@@ -123,6 +148,9 @@ bool Annotations::deleteWithId(int varId){
 }
 
 bool Annotations::updateAnnotation(int varId, QPolygonF varPosition){
+/****************************************************
+ * update an annotation after it has been moved by a user
+ ***************************************************/
     Annotation *currNode = new Annotation;
     Annotation *prevNode = new Annotation;
 
@@ -142,8 +170,11 @@ bool Annotations::updateAnnotation(int varId, QPolygonF varPosition){
 }
 
 
-void Annotations::deleteAllAnnotations()
-{
+void Annotations::deleteAllAnnotations(){
+/****************************************************
+ * clear the list of all annotations
+ ***************************************************/
+
     Annotation *currNode = new Annotation;
     Annotation *nextNode = new Annotation;
 

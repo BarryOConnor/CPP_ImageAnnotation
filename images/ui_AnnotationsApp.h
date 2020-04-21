@@ -1,14 +1,16 @@
 /********************************************************************************
 ** Form generated from reading UI file 'AnnotationsApp.ui'
 **
-** Created by: Qt User Interface Compiler version 5.14.1
+** Created by: Qt User Interface Compiler version 5.14.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
 #ifndef UI_ANNOTATIONSAPP_H
 #define UI_ANNOTATIONSAPP_H
+
 #include "GraphicsScene.h"
+
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
@@ -19,10 +21,12 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QWidget>
 
@@ -35,15 +39,20 @@ public:
     QWidget *centralWidget;
     QFormLayout *formLayout;
     QGridLayout *sideLayout;
+    QTableWidget *tblImages;
     QHBoxLayout *buttonLayout;
     QPushButton *btnAddClass;
     QPushButton *btnDeleteClass;
     QPushButton *btnLoadClasses;
+    QSpacerItem *verticalSpacer_2;
+    QPushButton *btnLoadImages;
+    QSpacerItem *verticalSpacer;
+    QTableWidget *tblClasses;
     QPushButton *btnLoadAnnotations;
     QPushButton *btnSaveAnnotations;
-    QTableWidget *tblImages;
-    QPushButton *btnLoadImages;
-    QTableWidget *tblClasses;
+    QHBoxLayout *horizontalLayout_3;
+    QLineEdit *txtSearch;
+    QPushButton *btnSearch;
     QGridLayout *mainLayout;
     QComboBox *cboColor;
     QLabel *lblColor;
@@ -80,6 +89,44 @@ public:
         sideLayout->setSpacing(6);
         sideLayout->setObjectName(QString::fromUtf8("sideLayout"));
         sideLayout->setContentsMargins(0, 0, 0, 0);
+        tblImages = new QTableWidget(centralWidget);
+        if (tblImages->columnCount() < 2)
+            tblImages->setColumnCount(2);
+        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
+        tblImages->setHorizontalHeaderItem(0, __qtablewidgetitem);
+        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
+        tblImages->setHorizontalHeaderItem(1, __qtablewidgetitem1);
+        tblImages->setObjectName(QString::fromUtf8("tblImages"));
+        QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Expanding);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(tblImages->sizePolicy().hasHeightForWidth());
+        tblImages->setSizePolicy(sizePolicy1);
+        tblImages->setMinimumSize(QSize(320, 0));
+        QFont font;
+        font.setPointSize(10);
+        tblImages->setFont(font);
+        tblImages->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        tblImages->setProperty("showDropIndicator", QVariant(false));
+        tblImages->setDragDropOverwriteMode(false);
+        tblImages->setSelectionMode(QAbstractItemView::SingleSelection);
+        tblImages->setSelectionBehavior(QAbstractItemView::SelectRows);
+        tblImages->setShowGrid(false);
+        tblImages->setGridStyle(Qt::NoPen);
+        tblImages->setSortingEnabled(false);
+        tblImages->setRowCount(0);
+        tblImages->setColumnCount(2);
+        tblImages->horizontalHeader()->setDefaultSectionSize(160);
+        tblImages->horizontalHeader()->setHighlightSections(false);
+        tblImages->horizontalHeader()->setProperty("showSortIndicator", QVariant(true));
+        tblImages->horizontalHeader()->setStretchLastSection(true);
+        tblImages->verticalHeader()->setVisible(false);
+        tblImages->verticalHeader()->setMinimumSectionSize(18);
+        tblImages->verticalHeader()->setProperty("showSortIndicator", QVariant(false));
+        tblImages->verticalHeader()->setStretchLastSection(false);
+
+        sideLayout->addWidget(tblImages, 4, 0, 1, 1);
+
         buttonLayout = new QHBoxLayout();
         buttonLayout->setSpacing(6);
         buttonLayout->setObjectName(QString::fromUtf8("buttonLayout"));
@@ -101,53 +148,11 @@ public:
         buttonLayout->addWidget(btnLoadClasses);
 
 
-        sideLayout->addLayout(buttonLayout, 3, 0, 1, 1);
+        sideLayout->addLayout(buttonLayout, 9, 0, 1, 1);
 
-        btnLoadAnnotations = new QPushButton(centralWidget);
-        btnLoadAnnotations->setObjectName(QString::fromUtf8("btnLoadAnnotations"));
+        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        sideLayout->addWidget(btnLoadAnnotations, 5, 0, 1, 1);
-
-        btnSaveAnnotations = new QPushButton(centralWidget);
-        btnSaveAnnotations->setObjectName(QString::fromUtf8("btnSaveAnnotations"));
-
-        sideLayout->addWidget(btnSaveAnnotations, 4, 0, 1, 1);
-
-        tblImages = new QTableWidget(centralWidget);
-        if (tblImages->columnCount() < 2)
-            tblImages->setColumnCount(2);
-        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
-        tblImages->setHorizontalHeaderItem(0, __qtablewidgetitem);
-        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
-        tblImages->setHorizontalHeaderItem(1, __qtablewidgetitem1);
-        tblImages->setObjectName(QString::fromUtf8("tblImages"));
-        QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Expanding);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(tblImages->sizePolicy().hasHeightForWidth());
-        tblImages->setSizePolicy(sizePolicy1);
-        tblImages->setMinimumSize(QSize(320, 0));
-        QFont font;
-        font.setPointSize(10);
-        tblImages->setFont(font);
-        tblImages->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        tblImages->setSelectionMode(QAbstractItemView::SingleSelection);
-        tblImages->setSelectionBehavior(QAbstractItemView::SelectRows);
-        tblImages->setShowGrid(false);
-        tblImages->setGridStyle(Qt::NoPen);
-        tblImages->setSortingEnabled(false);
-        tblImages->setRowCount(0);
-        tblImages->setColumnCount(2);
-        tblImages->horizontalHeader()->setDefaultSectionSize(160);
-        tblImages->horizontalHeader()->setHighlightSections(false);
-        tblImages->horizontalHeader()->setProperty("showSortIndicator", QVariant(true));
-        tblImages->horizontalHeader()->setStretchLastSection(true);
-        tblImages->verticalHeader()->setVisible(false);
-        tblImages->verticalHeader()->setMinimumSectionSize(18);
-        tblImages->verticalHeader()->setProperty("showSortIndicator", QVariant(false));
-        tblImages->verticalHeader()->setStretchLastSection(false);
-
-        sideLayout->addWidget(tblImages, 0, 0, 1, 1);
+        sideLayout->addItem(verticalSpacer_2, 10, 0, 1, 1);
 
         btnLoadImages = new QPushButton(centralWidget);
         btnLoadImages->setObjectName(QString::fromUtf8("btnLoadImages"));
@@ -155,7 +160,11 @@ public:
         btnLoadImages->setSizePolicy(sizePolicy);
         btnLoadImages->setMinimumSize(QSize(320, 0));
 
-        sideLayout->addWidget(btnLoadImages, 1, 0, 1, 1);
+        sideLayout->addWidget(btnLoadImages, 5, 0, 1, 1);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        sideLayout->addItem(verticalSpacer, 7, 0, 1, 1);
 
         tblClasses = new QTableWidget(centralWidget);
         if (tblClasses->columnCount() < 1)
@@ -169,6 +178,7 @@ public:
         tblClasses->setFont(font);
         tblClasses->setAutoFillBackground(true);
         tblClasses->setProperty("showDropIndicator", QVariant(false));
+        tblClasses->setAlternatingRowColors(false);
         tblClasses->setSelectionMode(QAbstractItemView::SingleSelection);
         tblClasses->setSelectionBehavior(QAbstractItemView::SelectRows);
         tblClasses->setShowGrid(false);
@@ -180,7 +190,33 @@ public:
         tblClasses->verticalHeader()->setVisible(false);
         tblClasses->verticalHeader()->setHighlightSections(false);
 
-        sideLayout->addWidget(tblClasses, 2, 0, 1, 1);
+        sideLayout->addWidget(tblClasses, 8, 0, 1, 1);
+
+        btnLoadAnnotations = new QPushButton(centralWidget);
+        btnLoadAnnotations->setObjectName(QString::fromUtf8("btnLoadAnnotations"));
+
+        sideLayout->addWidget(btnLoadAnnotations, 12, 0, 1, 1);
+
+        btnSaveAnnotations = new QPushButton(centralWidget);
+        btnSaveAnnotations->setObjectName(QString::fromUtf8("btnSaveAnnotations"));
+
+        sideLayout->addWidget(btnSaveAnnotations, 11, 0, 1, 1);
+
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setSpacing(6);
+        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
+        txtSearch = new QLineEdit(centralWidget);
+        txtSearch->setObjectName(QString::fromUtf8("txtSearch"));
+
+        horizontalLayout_3->addWidget(txtSearch);
+
+        btnSearch = new QPushButton(centralWidget);
+        btnSearch->setObjectName(QString::fromUtf8("btnSearch"));
+
+        horizontalLayout_3->addWidget(btnSearch);
+
+
+        sideLayout->addLayout(horizontalLayout_3, 6, 0, 1, 1);
 
 
         formLayout->setLayout(0, QFormLayout::LabelRole, sideLayout);
@@ -203,9 +239,6 @@ public:
 
         mainLayout->addWidget(lblColor, 8, 0, 1, 1);
 
-        mainScene = new GraphicsScene();
-        mainScene->setObjectName(QString::fromUtf8("gvImage"));
-
         gvImage = new QGraphicsView(centralWidget);
         gvImage->setObjectName(QString::fromUtf8("gvImage"));
         gvImage->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
@@ -219,6 +252,7 @@ public:
         btnTriangle = new QPushButton(centralWidget);
         btnTriangle->setObjectName(QString::fromUtf8("btnTriangle"));
         btnTriangle->setCheckable(true);
+        btnTriangle->setChecked(false);
 
         shapesLayout->addWidget(btnTriangle);
 
@@ -274,18 +308,19 @@ public:
     {
         AnnotationsApp->setWindowTitle(QCoreApplication::translate("AnnotationsApp", "SDI Annotations", nullptr));
         actionExit->setText(QCoreApplication::translate("AnnotationsApp", "Exit", nullptr));
-        btnAddClass->setText(QCoreApplication::translate("AnnotationsApp", "Add a Class", nullptr));
-        btnDeleteClass->setText(QCoreApplication::translate("AnnotationsApp", "Delete a Class", nullptr));
-        btnLoadClasses->setText(QCoreApplication::translate("AnnotationsApp", "Load Classes", nullptr));
-        btnLoadAnnotations->setText(QCoreApplication::translate("AnnotationsApp", "Load Annotations", nullptr));
-        btnSaveAnnotations->setText(QCoreApplication::translate("AnnotationsApp", "Save Annotations", nullptr));
         QTableWidgetItem *___qtablewidgetitem = tblImages->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QCoreApplication::translate("AnnotationsApp", "Image Name", nullptr));
         QTableWidgetItem *___qtablewidgetitem1 = tblImages->horizontalHeaderItem(1);
         ___qtablewidgetitem1->setText(QCoreApplication::translate("AnnotationsApp", "Image Date", nullptr));
+        btnAddClass->setText(QCoreApplication::translate("AnnotationsApp", "Add a Class", nullptr));
+        btnDeleteClass->setText(QCoreApplication::translate("AnnotationsApp", "Delete a Class", nullptr));
+        btnLoadClasses->setText(QCoreApplication::translate("AnnotationsApp", "Load Classes", nullptr));
         btnLoadImages->setText(QCoreApplication::translate("AnnotationsApp", "Load Images", nullptr));
         QTableWidgetItem *___qtablewidgetitem2 = tblClasses->horizontalHeaderItem(0);
         ___qtablewidgetitem2->setText(QCoreApplication::translate("AnnotationsApp", "Class Names", nullptr));
+        btnLoadAnnotations->setText(QCoreApplication::translate("AnnotationsApp", "Load Annotations", nullptr));
+        btnSaveAnnotations->setText(QCoreApplication::translate("AnnotationsApp", "Save Annotations", nullptr));
+        btnSearch->setText(QCoreApplication::translate("AnnotationsApp", "Search", nullptr));
         cboColor->setItemText(0, QCoreApplication::translate("AnnotationsApp", "Red", nullptr));
         cboColor->setItemText(1, QCoreApplication::translate("AnnotationsApp", "Green", nullptr));
         cboColor->setItemText(2, QCoreApplication::translate("AnnotationsApp", "Blue", nullptr));

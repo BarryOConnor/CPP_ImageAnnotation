@@ -3,9 +3,9 @@
 
 #include <QColor>
 
-    enum Shapes { Triangle, Rectangle, Trapezium, Polygon, None };
-    enum Colors { Red, Green, Blue, Black };
+    enum Shapes { Triangle, Rectangle, Trapezium, Polygon, None }; //!< enum containing the types of shapes that can be drawn
+    enum Colors { White, Black, Red, DarkRed, Green, DarkGreen, Blue, DarkBlue, Cyan, DarkCyan, Magenta, DarkMagenta, Yellow, DarkYellow, Gray, DarkGray, LightGray }; //!< enum containing the colors that can be used
 
-    extern QColor colorMap [4];
+    extern QColor colorMap [17]; //!< map one of the inter color values to a QT colour constant
 
 #endif // GLOBAL_ENUMS_H

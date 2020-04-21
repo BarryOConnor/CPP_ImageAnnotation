@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+CONFIG   += static
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,29 +25,30 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
+        Annotation.cpp \
         Annotations.cpp \
         AnnotationsApp.cpp \
+        AutoSave.cpp \
         Controller.cpp \
+        Global_Enums.cpp \
         GraphicsPolygonItem.cpp \
         GraphicsScene.cpp \
-        Model.cpp \
-        Annotation.cpp \
-        Global_Enums.cpp \
-        main.cpp
+        GripHandle.cpp \
+        main.cpp \
+        Model.cpp
 
 HEADERS += \
-    Annotations.h \
-    AnnotationsApp.h \
-    Controller.h \
-    GraphicsPolygonItem.h \
-    GraphicsScene.h \
-    Model.h \
-    Annotation.h \
-    Global_Enums.h
-
-
-FORMS += \
-    AnnotationsApp.ui
+        Annotation.h \
+        Annotations.h \
+        AnnotationsApp.h \
+        AutoSave.h \
+        Controller.h \
+        Global_Enums.h \
+        GraphicsPolygonItem.h \
+        GraphicsScene.h \
+        GripHandle.h \
+        Model.h \
+        View.h
 
 RESOURCES += \
     SDIAnnotations.qrc

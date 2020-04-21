@@ -1,8 +1,12 @@
 ﻿#include "AnnotationsApp.h"
 #include "Controller.h"
+#include "AutoSave.h"
+#include <QThread>
+#include <QTimer>
 
-Controller *controller = new Controller();
-
+Controller *controller;
+AutoSave * autosave;
+View *view;
 
 QString classFileName = "";
 QString currentImageDir = "";
@@ -23,14 +27,19 @@ QString toQssFormat(const QColor &color)
 
 
 
-AnnotationsApp::AnnotationsApp(QWidget *parent) : QMainWindow(parent), view(new Ui::AnnotationsApp)
+AnnotationsApp::AnnotationsApp(QWidget *parent) : QMainWindow(parent)
 {
-
+    view = new View();
     //setup the application UI
     view->setupUi(this);
 
     //pass some handles to the controller so it will work correctly
-    controller->initialise(view);
+    controller = new Controller(view, this);
+
+    autosave = new AutoSave();
+    QThread *autosaveThread = new QThread();
+    autosave->moveToThread(autosaveThread);
+    autosaveThread->start();
 
     //set up some basic color styles to keep the highlighted items blue
     QStringList styles;
@@ -61,10 +70,16 @@ AnnotationsApp::AnnotationsApp(QWidget *parent) : QMainWindow(parent), view(new 
     QObject::connect(this, &AnnotationsApp::btnRectangle_clicked, controller, &Controller::btnRectangle_clicked);
     QObject::connect(this, &AnnotationsApp::btnTrapezium_clicked, controller, &Controller::btnTrapezium_clicked);
     QObject::connect(this, &AnnotationsApp::btnPolygon_clicked, controller, &Controller::btnPolygon_clicked);
+    QObject::connect(this, &AnnotationsApp::btnSearch_clicked, controller, &Controller::btnSearch_clicked);
 
+    //GraphicsScene -> Controller signals
     QObject::connect(view->mainScene, &GraphicsScene::annotationReady, controller, &Controller::annotationReady);
     QObject::connect(view->mainScene, &GraphicsScene::annotationDeleted, controller, &Controller::annotationDeleted);
     QObject::connect(view->mainScene, &GraphicsScene::updateItem, controller, &Controller::updateItem);
+
+    //AutoSave-> Model and reply
+    QObject::connect(autosave, &AutoSave::getSaveData, controller->model, &Model::prepareAutosaveData);
+    QObject::connect(controller->model, &Model::saveDataReady, autosave, &AutoSave::saveDataReady);
 
     //setup the header buttons to connect to a sort algorithm for the tblClasses TblView
     QHeaderView *classHeader = qobject_cast<QTableView *>(view->tblClasses)->horizontalHeader();
@@ -171,4 +186,9 @@ void AnnotationsApp::on_btnPolygon_clicked()
 void AnnotationsApp::on_cboColor_currentIndexChanged(int varIndex)
 {
     emit cboColor_currentIndexChanged(varIndex);
+}
+
+void AnnotationsApp::on_btnSearch_clicked()
+{
+    emit btnSearch_clicked();
 }
