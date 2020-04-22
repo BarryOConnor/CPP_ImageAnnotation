@@ -32,41 +32,49 @@
 
 QT_BEGIN_NAMESPACE
 
+//! Qt generated class for handling the UI
+
 class View
 {
 public:
-    QAction *actionExit;
-    QWidget *centralWidget;
-    QFormLayout *formLayout;
-    QGridLayout *sideLayout;
-    QTableWidget *tblImages;
-    QHBoxLayout *buttonLayout;
-    QPushButton *btnAddClass;
-    QPushButton *btnDeleteClass;
-    QPushButton *btnLoadClasses;
-    QHBoxLayout *horizontalLayout_3;
-    QLineEdit *txtSearch;
-    QPushButton *btnSearch;
-    QSpacerItem *verticalSpacer_2;
-    QPushButton *btnLoadImages;
-    QSpacerItem *verticalSpacer;
-    QTableWidget *tblClasses;
-    QPushButton *btnLoadAnnotations;
-    QPushButton *btnSaveAnnotations;
-    QLabel *label;
-    QGridLayout *mainLayout;
-    QComboBox *cboColor;
-    QLabel *lblColor;
-    QGraphicsView *gvImage;
-    QHBoxLayout *shapesLayout;
-    QPushButton *btnTriangle;
-    QPushButton *btnRectangle;
-    QPushButton *btnTrapezium;
-    QPushButton *btnPolygon;
-    QMenuBar *menuBar;
-    QMenu *menuFile;
-    GraphicsScene *mainScene;
 
+    QWidget *centralWidget; //!< main widget holding the form
+    QFormLayout *formLayout; //!< layout for the central widget
+    QGridLayout *sideLayout; //!< layout for the left column
+    QTableWidget *tblImages; //!< image list
+    QHBoxLayout *buttonLayout; //!< layout for buttons on the left column
+    QPushButton *btnAddClass; //!< Add Class Button
+    QPushButton *btnDeleteClass; //!< delete Class Button
+    QPushButton *btnLoadClasses; //!< load classes button
+    QHBoxLayout *searchbar; //!< searchbar layout
+    QLineEdit *txtSearch; //!< search textbox
+    QPushButton *btnSearch; //!< search button
+    QSpacerItem *verticalSpacer_2; //!< second spacer in the left column
+    QPushButton *btnLoadImages; //!< load images button
+    QSpacerItem *verticalSpacer; //!< spacer in the left column
+    QTableWidget *tblClasses; //!< classes list
+    QPushButton *btnLoadAnnotations; //!< load annotations button
+    QPushButton *btnSaveAnnotations; //!< save annotations button
+    QLabel *lblSearch; //!< search label
+    QGridLayout *mainLayout; //!< layout for the right column
+    QComboBox *cboColor; //!< color dropdown list
+    QLabel *lblColor; //!< label for color dropdown
+    QGraphicsView *gvImage; //!< graphics view (the main canvas)
+    QHBoxLayout *shapesLayout; //!< layout for the shapes buttons
+    QPushButton *btnTriangle;  //!< Triangle button
+    QPushButton *btnRectangle; //!< Rectangle button
+    QPushButton *btnTrapezium; //!< Trapezium button
+    QPushButton *btnPolygon; //!< Polygon Button
+    QMenuBar *menuBar;  //!< menu bar
+    QMenu *menuFile;  //!< File option on menu
+    QAction *actionExit; //!< Exit menu item
+    GraphicsScene *mainScene;  //!< main scene within the graphicsview
+
+
+    //! setup of the main UI for the application
+    /*!
+      \param *AnnotationsApp pointer to the main window
+    */
     void setupUi(QMainWindow *AnnotationsApp)
     {
         if (AnnotationsApp->objectName().isEmpty())
@@ -151,21 +159,21 @@ public:
 
         sideLayout->addLayout(buttonLayout, 10, 0, 1, 1);
 
-        horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setSpacing(6);
-        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
+        searchbar = new QHBoxLayout();
+        searchbar->setSpacing(6);
+        searchbar->setObjectName(QString::fromUtf8("searchbar"));
         txtSearch = new QLineEdit(centralWidget);
         txtSearch->setObjectName(QString::fromUtf8("txtSearch"));
 
-        horizontalLayout_3->addWidget(txtSearch);
+        searchbar->addWidget(txtSearch);
 
         btnSearch = new QPushButton(centralWidget);
         btnSearch->setObjectName(QString::fromUtf8("btnSearch"));
 
-        horizontalLayout_3->addWidget(btnSearch);
+        searchbar->addWidget(btnSearch);
 
 
-        sideLayout->addLayout(horizontalLayout_3, 7, 0, 1, 1);
+        sideLayout->addLayout(searchbar, 7, 0, 1, 1);
 
         verticalSpacer_2 = new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
@@ -219,10 +227,10 @@ public:
 
         sideLayout->addWidget(btnSaveAnnotations, 12, 0, 1, 1);
 
-        label = new QLabel(centralWidget);
-        label->setObjectName(QString::fromUtf8("label"));
+        lblSearch = new QLabel(centralWidget);
+        lblSearch->setObjectName(QString::fromUtf8("lblSearch"));
 
-        sideLayout->addWidget(label, 6, 0, 1, 1);
+        sideLayout->addWidget(lblSearch, 6, 0, 1, 1);
 
 
         formLayout->setLayout(0, QFormLayout::LabelRole, sideLayout);
@@ -329,6 +337,11 @@ public:
         QMetaObject::connectSlotsByName(AnnotationsApp);
     } // setupUi
 
+
+    //! setup of translation strings for the application
+    /*!
+      \param *AnnotationsApp pointer to the main window
+    */
     void retranslateUi(QMainWindow *AnnotationsApp)
     {
         AnnotationsApp->setWindowTitle(QCoreApplication::translate("AnnotationsApp", "SDI Annotations", nullptr));
@@ -346,7 +359,7 @@ public:
         ___qtablewidgetitem2->setText(QCoreApplication::translate("AnnotationsApp", "Class Names", nullptr));
         btnLoadAnnotations->setText(QCoreApplication::translate("AnnotationsApp", "Load Annotations", nullptr));
         btnSaveAnnotations->setText(QCoreApplication::translate("AnnotationsApp", "Save Annotations", nullptr));
-        label->setText(QCoreApplication::translate("AnnotationsApp", "Search Image Names for images names beginning with:", nullptr));
+        lblSearch->setText(QCoreApplication::translate("AnnotationsApp", "Search Image Names for images names beginning with:", nullptr));
         cboColor->setItemText(0, QCoreApplication::translate("AnnotationsApp", "White", nullptr));
         cboColor->setItemText(1, QCoreApplication::translate("AnnotationsApp", "Black", nullptr));
         cboColor->setItemText(2, QCoreApplication::translate("AnnotationsApp", "Red", nullptr));

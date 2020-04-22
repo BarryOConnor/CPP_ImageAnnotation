@@ -4,25 +4,21 @@
 #include <QThread>
 #include <QTimer>
 
-Controller *controller;
-AutoSave * autosave;
-View *view;
+Controller *controller; //!< controller class
+AutoSave * autosave; //!< autosave class
+View *view; //!< view class
 
-QString classFileName = "";
-QString currentImageDir = "";
-
-bool imageLoaded = false;
-bool classSort = false;
-bool imageSortCol1 = false;
-bool imageSortCol2 = false;
-
-QString toQssFormat(const QColor &color)
+//! convert Qt color to a specific format needed by QSS
+/*!
+  \param varColor qt color
+*/
+QString toQssFormat(const QColor &varColor)
 {
     return QString("rgba(%1, %2, %3, %4)")
-            .arg(color.red())
-            .arg(color.green())
-            .arg(color.blue())
-            .arg(color.alpha());
+            .arg(varColor.red())
+            .arg(varColor.green())
+            .arg(varColor.blue())
+            .arg(varColor.alpha());
 }
 
 
@@ -36,6 +32,7 @@ AnnotationsApp::AnnotationsApp(QWidget *parent) : QMainWindow(parent)
     //pass some handles to the controller so it will work correctly
     controller = new Controller(view, this);
 
+    //start the autosave in a second thread specific to that process
     autosave = new AutoSave();
     QThread *autosaveThread = new QThread();
     autosave->moveToThread(autosaveThread);
@@ -49,8 +46,7 @@ AnnotationsApp::AnnotationsApp(QWidget *parent) : QMainWindow(parent)
     QString bg = toQssFormat( palette().color( QPalette::Active, QPalette::Highlight ) );
 
     styles << QString( "QTableView:!active { selection-color: %1; selection-background-color: %2; }" )
-    .arg( fg )
-    .arg( bg );
+    .arg( fg, bg );
 
     setStyleSheet( styles.join( " " ) );
 
@@ -150,6 +146,7 @@ void AnnotationsApp::on_btnSaveAnnotations_clicked()
 
 void AnnotationsApp::on_tblImages_cellClicked(int varRow, int varColumn)
 {
+    Q_UNUSED(varColumn);
     emit tblImages_cellClicked(varRow);
 }
 
@@ -158,6 +155,7 @@ void AnnotationsApp::on_tblImages_cellClicked(int varRow, int varColumn)
 
 void AnnotationsApp::on_tblClasses_cellClicked(int varRow, int varColumn)
 {
+    Q_UNUSED(varColumn);
     emit tblClasses_cellClicked(varRow);
 }
 

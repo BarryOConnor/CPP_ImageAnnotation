@@ -6,7 +6,7 @@
 
 class QPolygonF;
 
-//!  Annotations class.
+//!  Annotations class acts as a linked list.
 /*!
   Acts as a linked list containing annotations
 */
@@ -33,7 +33,7 @@ class Annotations  //LinkedList
       \param varImage the image to search by
       \return a vector containing the annotations relating to the image
     */
-    QVector<Annotation *> searchByImage(QString varImage);
+    QVector<Annotation *> searchByImage(const QString &varImage);
 
     //! retrieve the unique images from the linked list (for the file save)
     /*!
@@ -65,6 +65,7 @@ class Annotations  //LinkedList
 
     //! default constructor for the class
     Annotations();
+
     //! destructor for the class
     ~Annotations();
 
@@ -73,11 +74,9 @@ class Annotations  //LinkedList
         int length; //!< the length of the linked List
         Annotation *head; //!< pointer to the head of the linked list
         Annotation *tail; //!< pointer to the tail of the linked list
-        QMutex *mutex;
+
 
     friend class Model;
-    friend class Controller;
-    friend class Autosave;
 };
 
 #endif // ANNOTATIONS_H

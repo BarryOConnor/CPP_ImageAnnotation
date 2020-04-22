@@ -8,7 +8,7 @@
 #include <QTableWidget>
 #include <QMainWindow>
 
-//!  Controller class.
+//!  Controller class for the application.
 /*!
   Acts as a go between for the view and model classes
 */
@@ -116,7 +116,7 @@ private:
       \param *varContents vector of pairs (since the table has 2 columns) containing the table data
       \param searchTerm the text to be searched for
     */
-    void binarySearch(QVector<QPair<QString, QString>> *varContents, QString searchTerm);
+    void binarySearch(QVector<QPair<QString, QString>> *varContents, const QString &searchTerm);
 
     //! bubblesort function to sort the contents of the images or classes lists
     /*!
@@ -131,7 +131,7 @@ private:
       \param *varTable pointer to the TableView control that needs to be updated
       \param *varContents vector of pairs (since the table has 2 columns) containing the table data
     */
-    void populateTableView(QTableWidget* varTable, QVector<QPair<QString, QString>> varContents);
+    void populateTableView(QTableWidget* varTable, const QVector<QPair<QString, QString>> &varContents);
 
     QString classFileName; //!< stores the name of the class file
     QString annotationFileName; //!< stores the name of the annotations file

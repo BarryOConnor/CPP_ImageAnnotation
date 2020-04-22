@@ -5,7 +5,7 @@
 #include <QGraphicsScene>
 #include <QAction>
 
-//!  Model class.
+//!  GraphicsScene class acts as a canvas for all drawing operations.
 /*!
   subclasses QGraphicsScene and acts as a custom drawing surface for all the graphical items
 */
@@ -59,37 +59,13 @@ public:
     /*!
       \param varClass the new mode value for the property
     */
-    void setMode(Modes newMode);
+    void setMode(Modes varMode);
 
     //! used to update the annotations in the GraphicsScene when loaded from file
     /*!
       \param varAnnotationsList a vector of annotation objects to be displayed on the scene
     */
-    void updateAnnotations(QVector<Annotation*> varAnnotationList);
-
-    //! double click event for the GraphicsScene (not currently used)
-    /*!
-      \param *varEvent pointer to a mouse event object
-    */
-    virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * varEvent);
-
-    //! mouse move event for the GraphicsScene used to move a shape
-    /*!
-      \param *varEvent pointer to a mouse event object
-    */
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent * varEvent);
-
-    //! double click event for the GraphicsScene used to draw points of a shape
-    /*!
-      \param *varEvent pointer to a mouse event object
-    */
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent * varEvent);
-
-    //! Mouse Release event for the GraphicsScene (not currently used)
-    /*!
-      \param *varEvent pointer to a mouse event object
-    */
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * varEvent);
+    void updateAnnotations(const QVector<Annotation*> &varAnnotationList);
 
     //! constructor for the class
     GraphicsScene();
@@ -125,6 +101,9 @@ public slots:
     //! slot for the copy signal from the popup menu. copies the selected item
     void copyItem();
 
+    //! slot for the paint signal from the popup menu. repaints the selected item
+    void paintItem();
+
     //! slot for when an item is moved. indicates that the item has been moved
     /*!
       \param varId Id of the shape that has been moved
@@ -132,12 +111,35 @@ public slots:
     void itemMoved(int varId);
 
 private:
+    //! double click event for the GraphicsScene (not currently used)
+    /*!
+      \param *varEvent pointer to a mouse event object
+    */
+    virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * varEvent);
+
+    //! mouse move event for the GraphicsScene used to move a shape
+    /*!
+      \param *varEvent pointer to a mouse event object
+    */
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent * varEvent);
+
+    //! double click event for the GraphicsScene used to draw points of a shape
+    /*!
+      \param *varEvent pointer to a mouse event object
+    */
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent * varEvent);
+
+    //! Mouse Release event for the GraphicsScene (not currently used)
+    /*!
+      \param *varEvent pointer to a mouse event object
+    */
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * varEvent);
+
+
     const int radius = 2; //!< const holding a set radius value
 
     QVector<QPointF> coords; //!< A vector containing points for the current shape as it's drawn
-    QVector<QGraphicsLineItem *> lines; //!< a vector of lines for the current shape as it's drawn
     GraphicsPolygonItem *currentPolygon; //!< pointer to a PolygonItem for the current shape
-    QGraphicsLineItem *line; //!< pointer to a line object containing the most recent line as it's drawn
     QPixmap currentImage; //!< the current image
     QString currentClass; //!< the current class
     bool imageLoaded; //!< has an image been loaded?
@@ -154,6 +156,7 @@ private:
     QMenu *childPopupMenu; //!< a pointer to the menu object to use as a popup menu
     QAction *deleteAction; //!< pointer to the "delete" option on the popup menu
     QAction *copyAction; //!< pointer to the "copy" option on the popup menu
+    QAction *paintAction; //!< pointer to the "paint" option on the popup menu
 
 };
 

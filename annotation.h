@@ -5,7 +5,7 @@
 #include <QVector>
 #include <QPointF>
 
-//!  Annotation class.
+//!  Annotation class acts as a node in the linked list.
 /*!
   Stores the base information used to create an annotation, also used to pass shapes across the application since a shape contains
   all the same variables except the pointer to next so it makes a handy container

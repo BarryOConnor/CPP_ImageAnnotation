@@ -139,7 +139,14 @@ signals:
     //! emits a signal to the controller when Search button is clicked
     void btnSearch_clicked();
 
+private:
+    QString classFileName = ""; //!< name of the Classes file
+    QString currentImageDir = ""; //!< name if the image directory
 
+    bool imageLoaded = false; //!< has an image been loaded?
+    bool classSort = false; //!< direction of sort for class table
+    bool imageSortCol1 = false; //!< direction of sort for column 0 of image table
+    bool imageSortCol2 = false; //!< direction of sort for column 1 of image table
 };
 
 #endif // ANNOTATIONSAPP_H

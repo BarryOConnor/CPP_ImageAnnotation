@@ -6,7 +6,7 @@
 
 class GraphicsScene;
 class GripHandle;
-//!  Model class.
+//! GraphicsPolygonItem class stores and handles the shapes within the GraphicsScene.
 /*!
   subclasses QGraphicsPolygonItem and acts as a custom container for polygon shapes drawn in the application
 */
@@ -45,12 +45,22 @@ public:
     */
     int getColor();
 
+    //! sets the Color of the object
+    /*!
+      \param varColor int value containing the color value
+    */
+    void setColor(int varColor);
+
     //! retrieves the Label associated with the object
     /*!
       \return QString value containing the Label
     */
     QString getLabel();
 
+    //! retrieves relevant fields from the shape into an annotation
+    /*!
+      \return pointer to an annotation object containing the data
+    */
     Annotation * getAnnotationInfo();
 
     //! retrieves the current shape as a polygon
@@ -59,6 +69,58 @@ public:
     */
     QPolygonF getPolygon() const;
 
+    //! Adds a point to the underlying GraphicsPolygonItem
+    /*!
+      This also adds an additional shape which functions as the handle for adjusting
+      the shape vertices
+      \param varPoint QPointF object representing x and y coordinates
+    */
+    void addPoint(QPointF varPoint);
+
+    //! Moves a point in the underlying GraphicsPolygonItem
+    /*!
+      This is mainly used by the GripHandle class to update the point associated with the
+      handle when the handle itself gets moved
+      \param varIndex index of the point to move
+      \param varPointF coordinates of the new location
+    */
+    void movePoint(int varIndex, QPointF varPoint);
+
+    //! Moves a grip handle
+    /*!
+      This is mainly used when the shape gets moved on the canvas
+      the handles need to be moved along with the shape so this is
+      updated with this function
+      \param varIndex index of the point to move
+      \param varPointF coordinates of the new location
+    */
+    void moveGrip(int varIndex, QPointF varPoint);
+
+    //! Adds several points at a time the underlying GraphicsPolygonItem
+    /*!
+      Mainly used for import or copy functionality where the entire
+      polygon is available
+      \param varIndex index of the point to move
+      \param varPoints a vector containing the coordinates of the shape
+    */
+    void addPoints(const QVector<QPointF> &varPoints);
+
+
+signals:
+    //! signal emitted when the shape's position has been changed by the user
+    /*!
+      \param varId int containing the ID of the moving shape
+    */
+    void itemMoved(int varId);
+
+protected:
+    //! override the default to allow for a custom context menu for the shape
+    /*!
+      \return *varEvent QGraphicsSceneContextMenuEvent object which will handle the popup menu event
+    */
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *varEvent) override;
+
+private:
     //! custom paint event overriding the original to handle drawing both the shape and the label in one object
     /*!
       \param *varPainter pointer to a QPainter object which handles the "paint" of the class
@@ -80,40 +142,24 @@ public:
     */
     QPainterPath shape() const override;
 
-    void addPoint(QPointF varPoint);
-    void movePoint(int varIndex, QPointF varPoint);
-    void moveGrip(int varIndex, QPointF varPoint);
-
-    void addPoints(QVector<QPointF> varPoints);
-
-
-signals:
-    //! signal emitted when the shape's position has been changed by the user
+    //! override the default to allow for updates to happen
     /*!
-      \param varId int containing the ID of the moving shape
-    */
-    void itemMoved(int varId);
+      Updates will only happen once the shape loses focus, otherwise the app would
+      end up swamped in messages as shapes move
 
-protected:
-    //! override the default to allow for a custom context menu for the shape
-    /*!
-      \return *varEvent QGraphicsSceneContextMenuEvent object which will handle the popup menu event
+      \param *varEvent QGraphicsSceneHoverEvent object which will handle the hover event
     */
-    void contextMenuEvent(QGraphicsSceneContextMenuEvent *varEvent) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent * varEvent) override;
 
-private:
     QMenu * popupMenu; //!< pointer to a popup menu for the shape
     QString label; //!< the text label for the shape
     int color; //!< the color for the shape
     int id; //!< the id for the shape
     int shapetype; //!< the type of shape represented
-    QGraphicsScene *parent;
-    bool editMode;
-    QVector<QPointF> points;
-    QVector<GripHandle*> grips;
+    QVector<QPointF> points; //!< vector of coordinatesrepresenting the shape
+    QVector<GripHandle*> grips; //!< vector of grips which mirrors the above coordinates
 
 
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent * varEvent) override;
 };
 
 #endif // CUSTOMPOLYGON_H

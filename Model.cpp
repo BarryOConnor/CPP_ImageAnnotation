@@ -12,6 +12,7 @@ Model::Model()
     imageList = {};
     currentImage = "";
     currentClass = "";
+    currentShape = -1;
     currentColor = 0;
     annotations = new Annotations();
     hasAnnotations = false;
@@ -104,8 +105,7 @@ QByteArray Model::saveAnnotations(){
                 imageObject->insert("no_of_shapes", currImage.second.size());
 
                 QJsonArray *shapeArray = new QJsonArray();
-                for(int shapeCount = 0; shapeCount < currImage.second.size(); shapeCount++){
-                    Annotation * currShape = currImage.second.at(shapeCount);
+                for(Annotation *currShape : currImage.second){
                     QJsonObject *shapeObject = new QJsonObject();
 
                     //format the data for each shape
@@ -141,25 +141,24 @@ QByteArray Model::saveAnnotations(){
 
 
 
-void Model::loadAnnotations(QJsonDocument JSONdoc){
+void Model::loadAnnotations(const QJsonDocument &JSONdoc){
 /****************************************************
  * Loads an annotation file and uses the Qt JSON handling
  * classes to convert that information into a linked List
  ***************************************************/
 
     QJsonObject JSONobj = JSONdoc.object();
-    QVector<QPointF> newCoordinates = {};
 
     //convert the "images" tag to an array
     QJsonArray imageArray = JSONobj["images"].toArray();
-    for(const QJsonValue& image: imageArray) {
+    for(const QJsonValueRef& image: imageArray) {
 
         //create each element as an object for further parsing
         QJsonObject imageObj = image.toObject();
 
         //create an array containing the contents of the shapes element
         QJsonArray shapeArray = imageObj["shapes"].toArray();
-        for(const QJsonValue& shape: shapeArray) {
+        for(const QJsonValueRef& shape: shapeArray) {
             Annotation *newAnnotation = new Annotation();
             QJsonObject shapeObj = shape.toObject();
 
@@ -175,7 +174,7 @@ void Model::loadAnnotations(QJsonDocument JSONdoc){
             QString coordValues = "";
 
             //add each coordinate to the coordinates vector
-            for(const QJsonValue& coordinates: coordinateArray) {
+            for(const QJsonValueRef& coordinates: coordinateArray) {
                 QJsonObject coordinateObj = coordinates.toObject();
                 if(coordinateObj.contains("Point_"+QString::number(pointCount))){
                     coordValues = coordinateObj["Point_"+QString::number(pointCount)].toString();
@@ -206,7 +205,6 @@ void Model::deleteAnnotation(int varId)
 void Model::updateAnnotation(int varId, QPolygonF varPosition)
 {
     annotations->updateAnnotation(varId, varPosition);
-    annotations->display();
 }
 
 void Model::prepareAutosaveData()

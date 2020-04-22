@@ -4,8 +4,8 @@
 
 Annotations::Annotations(){
     length = 0;
-    head = NULL;
-    tail = NULL;
+    head = nullptr;
+    tail = nullptr;
 }
 
 Annotations::~Annotations(){
@@ -19,7 +19,7 @@ void Annotations::display(){
     Annotation *temp=new Annotation;
 
     temp=head;
-    while(temp!=NULL)
+    while(temp!=nullptr)
     {
         qDebug() << temp->id << "\t";
         qDebug() << temp->classname << "\t";
@@ -39,11 +39,11 @@ void Annotations::appendAnnotation(Annotation *varAnnotation){
  * dappend an annotation to the linkedlist
  ***************************************************/
 
-    varAnnotation->next = NULL;
-    if(head == NULL){
+    varAnnotation->next = nullptr;
+    if(head == nullptr){
         head = varAnnotation;
         tail = varAnnotation;
-        varAnnotation = NULL;
+        varAnnotation = nullptr;
     } else {
         tail->next = varAnnotation;
         tail = varAnnotation;
@@ -53,7 +53,7 @@ void Annotations::appendAnnotation(Annotation *varAnnotation){
 }
 
 
-QVector<Annotation *> Annotations::searchByImage(QString varImage) {
+QVector<Annotation *> Annotations::searchByImage(const QString &varImage) {
 /****************************************************
  * search the list for a given image
  ***************************************************/
@@ -61,7 +61,7 @@ QVector<Annotation *> Annotations::searchByImage(QString varImage) {
     QVector<Annotation*> annotationList;
 
     currNode = head;
-    while (currNode != NULL) {
+    while (currNode != nullptr) {
         if(currNode->image == varImage) {
             annotationList.push_back(currNode);
         }
@@ -79,7 +79,7 @@ QVector<QString> *Annotations::uniqueImages() {
     QVector<QString> *results = new QVector<QString>;
 
     currNode = head;
-    while (currNode != NULL) {
+    while (currNode != nullptr) {
         if(!prevImages.contains(currNode->image)){
             // if the values match add it to the vector
             results->push_back(currNode->image);
@@ -100,13 +100,13 @@ QVector<QPair<QString, QVector<Annotation *>>> *Annotations::getJSONAnnotations(
     QVector<QPair<QString, QVector<Annotation *>>> *results = new QVector<QPair<QString, QVector<Annotation *>>>;
     QPair<QString, QVector<Annotation *>> matches = QPair<QString, QVector<Annotation *>>();
 
-    for(int loopCount = 0; loopCount < varImages->size(); loopCount++) {
+    for(const QString &varImage: *varImages){
         // first value is the image name
-        matches.first = varImages->at(loopCount);
+        matches.first = varImage;
         matches.second.clear();
         currNode = head;
-        while (currNode != NULL) {
-            if(currNode->image == varImages->at(loopCount)){
+        while (currNode != nullptr) {
+            if(currNode->image == varImage){
                 //add the node to the vector since ti is associated with the given image
                 matches.second.push_back(currNode);
                 prevImages += currNode->image;
@@ -152,7 +152,6 @@ bool Annotations::updateAnnotation(int varId, QPolygonF varPosition){
  * update an annotation after it has been moved by a user
  ***************************************************/
     Annotation *currNode = new Annotation;
-    Annotation *prevNode = new Annotation;
 
     currNode = head;
     for(int loopCount = 0; loopCount <= length; loopCount ++){
@@ -163,7 +162,6 @@ bool Annotations::updateAnnotation(int varId, QPolygonF varPosition){
             }
             return true;
         }
-        prevNode = currNode;
         currNode = currNode->next;
     }
     return false;
@@ -180,12 +178,12 @@ void Annotations::deleteAllAnnotations(){
 
     currNode = head;
 
-    while (currNode != NULL)
+    while (currNode != nullptr)
     {
         nextNode = currNode->next;
         free(currNode);
         currNode = nextNode;
     }
     length = 0;
-    head = NULL;
+    head = nullptr;
 }

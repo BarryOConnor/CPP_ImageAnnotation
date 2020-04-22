@@ -22,21 +22,32 @@ GraphicsScene::GraphicsScene()
     currentId = 0;
     drawingMode = isMoving;
     currentColor = Red;
+    currentShape = -1;
+    currentPolygon = {};
+
 
     //handle the popup menu so that it can be used by the shapes
     childPopupMenu = new QMenu;
+
+    //delete a shape
     deleteAction = new QAction(QIcon(":images/trashcan.png"), tr("&Delete"), this);
-    deleteAction->setShortcut(tr("Delete"));
     deleteAction->setStatusTip(tr("Delete annotation shape"));
-    copyAction = new QAction(QIcon(":images/copy.png"), tr("&Copy"), this);
-    copyAction->setShortcut(tr("Copy"));
-    copyAction->setStatusTip(tr("Copy annotation shape"));
     childPopupMenu->addAction(deleteAction);
+
+    // copy a shape
+    copyAction = new QAction(QIcon(":images/copy.png"), tr("&Copy"), this);
+    copyAction->setStatusTip(tr("Copy annotation shape"));
     childPopupMenu->addAction(copyAction);
+
+    // paint a shape
+    paintAction = new QAction(QIcon(":images/paint.png"), tr("&Paint"), this);
+    paintAction->setStatusTip(tr("repaint using the current colour"));
+    childPopupMenu->addAction(paintAction);
 
     //connect the signals from the popup menu to the Graphics Scene which handles them
     connect(deleteAction, &QAction::triggered, this, &GraphicsScene::deleteItem);
     connect(copyAction, &QAction::triggered, this, &GraphicsScene::copyItem);
+    connect(paintAction, &QAction::triggered, this, &GraphicsScene::paintItem);
 
 }
 
@@ -86,10 +97,9 @@ void GraphicsScene::setMode(Modes varMode){
     this->drawingMode = varMode;
 }
 
-void GraphicsScene::updateAnnotations(QVector<Annotation*> varAnnotationList)
+void GraphicsScene::updateAnnotations(const QVector<Annotation*> &varAnnotationList)
 {
-    for(int loopCount = 0; loopCount < varAnnotationList.size(); loopCount ++){
-        Annotation *annotation = varAnnotationList[loopCount];
+    for(Annotation* annotation: varAnnotationList){
         //create a new polygon with the information, add it to the scene and update the points
         currentPolygon = new GraphicsPolygonItem(annotation, childPopupMenu, this);
         addItem(currentPolygon);
@@ -167,6 +177,22 @@ void GraphicsScene::copyItem()
         }
     }
 
+}
+
+void GraphicsScene::paintItem()
+{
+    QList<QGraphicsItem *> selectedItems = this->selectedItems();
+
+    for (QGraphicsItem *item : qAsConst(selectedItems)) {
+        if (item->type() == GraphicsPolygonItem::Type){
+            GraphicsPolygonItem * selectedPoly = qgraphicsitem_cast<GraphicsPolygonItem *>(item);
+
+            selectedPoly->setColor(currentColor);
+            selectedPoly->update();
+            update();
+
+        }
+    }
 }
 
 void GraphicsScene::itemMoved(int varId)

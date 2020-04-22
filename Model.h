@@ -6,7 +6,7 @@
 
 class QJsonDocument;
 
-//!  Model class.
+//! Model class handles most elements of data within the application.
 /*!
   The Model class handles most elements of data within the application
 */
@@ -118,7 +118,7 @@ public:
     /*!
       \param JSONDoc JSON format content representing the annotations
     */
-    void loadAnnotations(QJsonDocument JSONdoc);
+    void loadAnnotations(const QJsonDocument &JSONdoc);
 
     //! deletes all annotations
     void deleteAnnotations();
@@ -137,9 +137,15 @@ public:
     void updateAnnotation(int varId, QPolygonF varPosition);
 
 public slots:
+    //! recieves notification from the autosave thread that a new autosave is in progress
     void prepareAutosaveData();
 
 signals:
+    //! emits a signal to the autosave thread containing the data it needs to run
+    /*!
+      \param *uniqueImages QVector containing a list of all unique images in the linked list
+      \param *jsonData A vector of pairs containing the name of the image and all corresponding annotations
+    */
     void saveDataReady(QVector<QString> * uniqueImages, QVector<QPair<QString, QVector<Annotation *>>> *JSONData);
 
 private:

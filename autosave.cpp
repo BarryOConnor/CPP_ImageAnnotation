@@ -13,12 +13,14 @@
 
 AutoSave::AutoSave()
 {
-
+    const int ONE_MINUTE = 60000;
     filename = "autosave.annotations";
-    timer = new QTimer(0); //parent must be null
-    overwrite = false;
+
+    //create a new timer, set it to 1 minute and connect the timeout signal from it to the signal
+    //to the main thread to begin the autosave process
+    timer = new QTimer(nullptr);
     QObject::connect(timer, &QTimer::timeout, this, &AutoSave::getSaveData);
-    timer->setInterval(60000);
+    timer->setInterval(ONE_MINUTE);  //60000 milliseconds = 1 minute
     timer->start();
 }
 
@@ -43,8 +45,8 @@ void AutoSave::saveDataReady( QVector<QString> * uniqueImages, QVector<QPair<QSt
                     imageObject->insert("no_of_shapes", currImage.second.size());
 
                     QJsonArray *shapeArray = new QJsonArray();
-                    for(int shapeCount = 0; shapeCount < currImage.second.size(); shapeCount++){
-                        Annotation * currShape = currImage.second.at(shapeCount);
+                    for (auto currShape: currImage.second){
+
                         QJsonObject *shapeObject = new QJsonObject();
 
                         //format the data for each shape
@@ -74,20 +76,19 @@ void AutoSave::saveDataReady( QVector<QString> * uniqueImages, QVector<QPair<QSt
         finalJsonObject->insert("images",*imageArray);
         QJsonDocument doc(*finalJsonObject);
 
+        // add the date to the front of the filename just so it doesn't overwrite
+        QFile file(QDate::currentDate().toString("yyyy-MM-dd") + filename);
+          if(file.open(QIODevice::WriteOnly | QIODevice::Text))
+          {
 
+              QTextStream stream(&file);
 
-            QFile file(QDate::currentDate().toString("yyyy-MM-dd") + filename);
-              if(file.open(QIODevice::WriteOnly | QIODevice::Text))
-              {
+              // collect the required data from the model which stores the annotations list
+              stream << doc.toJson();
 
-                  QTextStream stream(&file);
+              file.close();
 
-                  // collect the required data from the model which stores the annotations list
-                  stream << doc.toJson();
-
-                  file.close();
-
-              }
+          }
 
 
 }

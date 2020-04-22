@@ -28,7 +28,7 @@ Controller::~Controller(){
     delete this;
 }
 
-void Controller::binarySearch(QVector<QPair<QString, QString>> *varContents, QString searchTerm){
+void Controller::binarySearch(QVector<QPair<QString, QString>> *varContents, const QString &searchTerm){
 /****************************************************
  * perform a binary search on the images list
  ***************************************************/
@@ -59,7 +59,8 @@ void Controller::bubbleSort(QVector<QPair<QString, QString>>& varContents, bool 
 /****************************************************
  * perform a bubblesort on a given table
  ***************************************************/
-    typedef QVector<QString>::size_type size_type;
+    using size_type = QVector<QString>::size_type;
+
     for (size_type i = 1; i < varContents.size(); ++i) // for n-1 passes
     {
         for (size_type j = 0; j < (varContents.size() - 1); ++j)
@@ -108,7 +109,7 @@ void Controller::bubbleSort(QVector<QPair<QString, QString>>& varContents, bool 
     }
 }
 
-void Controller::populateTableView(QTableWidget* varTable, QVector<QPair<QString, QString>> varContents) {
+void Controller::populateTableView(QTableWidget* varTable, const QVector<QPair<QString, QString>> &varContents) {
  /****************************************************
  * populate a given tableview with content
  ***************************************************/
@@ -118,14 +119,14 @@ void Controller::populateTableView(QTableWidget* varTable, QVector<QPair<QString
     varTable->setRowCount(0);
     int columns = varTable->columnCount();
 
-    for (int loopCount = 0; loopCount < varContents.size(); loopCount++) {
+    for (auto &varContent : varContents){
         varTable->insertRow(varTable->rowCount()); //insert a row at the end of the list
-        QTableWidgetItem* firstItem = new QTableWidgetItem(varContents[loopCount].first); //create an item to house the content
+        QTableWidgetItem* firstItem = new QTableWidgetItem(varContent.first); //create an item to house the content
         firstItem->setFlags(firstItem->flags() ^ Qt::ItemIsEditable); //make sure the user can't edit the contents
         varTable->setItem(varTable->rowCount() - 1, 0, firstItem);
         if (columns > 1) {
             //add second col if it's the Images control
-            QTableWidgetItem* secondItem = new QTableWidgetItem(varContents[loopCount].second);
+            QTableWidgetItem* secondItem = new QTableWidgetItem(varContent.second);
             secondItem->setFlags(secondItem->flags() ^ Qt::ItemIsEditable);
             varTable->setItem(varTable->rowCount() - 1, 1, secondItem);
         }
