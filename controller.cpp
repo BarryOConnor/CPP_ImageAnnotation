@@ -1,7 +1,7 @@
-#include "Controller.h"
-#include "View.h"
-#include "Model.h"
-#include "Global_Enums.h"
+#include "controller.h"
+#include "view.h"
+#include "model.h"
+#include "global-enums.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>

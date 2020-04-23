@@ -1,7 +1,7 @@
 #ifndef ANNOTATIONSAPP_H
 #define ANNOTATIONSAPP_H
-#include "Controller.h"
-#include "View.h"
+#include "controller.h"
+#include "view.h"
 #include <QMainWindow>
 
 

@@ -1,5 +1,5 @@
-#include "GripHandle.h"
-#include "GraphicsPolygonItem.h"
+#include "griphandle.h"
+#include "graphicspolygonitem.h"
 #include <QColor>
 #include <QBrush>
 #include <QPen>

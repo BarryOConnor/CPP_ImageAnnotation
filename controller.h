@@ -1,9 +1,9 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
-#include "View.h"
-#include "Annotation.h"
-#include "Model.h"
-#include "GraphicsScene.h"
+#include "view.h"
+#include "annotation.h"
+#include "model.h"
+#include "graphicsscene.h"
 
 #include <QTableWidget>
 #include <QMainWindow>

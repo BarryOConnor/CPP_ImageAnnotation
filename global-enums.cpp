@@ -1,4 +1,4 @@
-#include "Global_Enums.h"
+#include "global-enums.h"
 
 // map for the various QT constants for colour
 

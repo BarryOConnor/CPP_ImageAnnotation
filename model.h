@@ -1,6 +1,6 @@
 #ifndef MODEL_H
 #define MODEL_H
-#include "Annotations.h"
+#include "annotations.h"
 
 #include <QObject>
 

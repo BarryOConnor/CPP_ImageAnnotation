@@ -1,7 +1,7 @@
-#include "GraphicsPolygonItem.h"
-#include "GraphicsScene.h"
-#include "Global_Enums.h"
-#include "GripHandle.h"
+#include "graphicspolygonitem.h"
+#include "graphicsscene.h"
+#include "global-enums.h"
+#include "griphandle.h"
 
 #include <QDebug>
 #include <QPen>

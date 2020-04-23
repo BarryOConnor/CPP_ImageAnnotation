@@ -25,30 +25,30 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        Annotation.cpp \
-        Annotations.cpp \
-        AnnotationsApp.cpp \
-        AutoSave.cpp \
-        Controller.cpp \
-        Global_Enums.cpp \
-        GraphicsPolygonItem.cpp \
-        GraphicsScene.cpp \
-        GripHandle.cpp \
+        annotation.cpp \
+        annotations-app.cpp \
+        annotations.cpp \
+        autosave.cpp \
+        controller.cpp \
+        global-enums.cpp \
+        graphicspolygonitem.cpp \
+        graphicsscene.cpp \
+        griphandle.cpp \
         main.cpp \
-        Model.cpp
+        model.cpp
 
 HEADERS += \
-        Annotation.h \
-        Annotations.h \
-        AnnotationsApp.h \
-        AutoSave.h \
-        Controller.h \
-        Global_Enums.h \
-        GraphicsPolygonItem.h \
-        GraphicsScene.h \
-        GripHandle.h \
-        Model.h \
-        View.h
+        annotation.h \
+        annotations-app.h \
+        annotations.h \
+        autosave.h \
+        controller.h \
+        global-enums.h \
+        graphicspolygonitem.h \
+        graphicsscene.h \
+        griphandle.h \
+        model.h \
+        view.h
 
 RESOURCES += \
     SDIAnnotations.qrc

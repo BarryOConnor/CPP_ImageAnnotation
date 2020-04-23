@@ -1,6 +1,6 @@
 #ifndef ANNOTATIONS_H
 #define ANNOTATIONS_H
-#include "Annotation.h"
+#include "annotation.h"
 
 #include <QMutex>
 

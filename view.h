@@ -28,7 +28,7 @@
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QWidget>
 
-#include "GraphicsScene.h"
+#include "graphicsscene.h"
 
 QT_BEGIN_NAMESPACE
 

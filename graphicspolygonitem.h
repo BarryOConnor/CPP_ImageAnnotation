@@ -1,7 +1,7 @@
 #ifndef CUSTOMPOLYGON_H
 #define CUSTOMPOLYGON_H
-#include "Annotation.h"
-#include "GripHandle.h"
+#include "annotation.h"
+#include "griphandle.h"
 #include <QGraphicsPolygonItem>
 
 class GraphicsScene;

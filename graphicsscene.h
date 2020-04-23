@@ -1,7 +1,7 @@
 #ifndef GRAPHICSSCENE_H
 #define GRAPHICSSCENE_H
-#include "GraphicsPolygonItem.h"
-#include "Annotation.h"
+#include "graphicspolygonitem.h"
+#include "annotation.h"
 #include <QGraphicsScene>
 #include <QAction>
 

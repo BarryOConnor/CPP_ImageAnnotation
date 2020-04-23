@@ -4,7 +4,7 @@
 #include <QPainterPath>
 #include <QGraphicsPathItem>
 
-#include "GraphicsPolygonItem.h"
+#include "graphicspolygonitem.h"
 
 class GraphicsPolygonItem;
 //!  GripHandle class acts as adjustment handles for vectors in the GraphicsPolygonItem.

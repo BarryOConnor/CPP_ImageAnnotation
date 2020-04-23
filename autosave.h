@@ -1,6 +1,6 @@
 #ifndef AUTOSAVE_H
 #define AUTOSAVE_H
-#include "Annotation.h"
+#include "annotation.h"
 #include <QThread>
 #include <QTimer>
 

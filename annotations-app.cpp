@@ -1,6 +1,6 @@
-﻿#include "AnnotationsApp.h"
-#include "Controller.h"
-#include "AutoSave.h"
+﻿#include "annotations-app.h"
+#include "controller.h"
+#include "autosave.h"
 #include <QThread>
 #include <QTimer>
 

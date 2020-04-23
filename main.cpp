@@ -1,4 +1,4 @@
-#include "AnnotationsApp.h"
+#include "annotations-app.h"
 
 #include <QApplication>
 #include <QGridLayout>

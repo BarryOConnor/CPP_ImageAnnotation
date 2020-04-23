@@ -1,6 +1,6 @@
-#include "GraphicsScene.h"
-#include "Controller.h"
-#include "Global_Enums.h"
+#include "graphicsscene.h"
+#include "controller.h"
+#include "global-enums.h"
 
 #include <QMessageBox>
 #include <QDebug>

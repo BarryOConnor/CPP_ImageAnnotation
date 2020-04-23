@@ -1,4 +1,4 @@
-#include "AutoSave.h"
+#include "autosave.h"
 #include <QTimer>
 #include <QDebug>
 #include <QObject>
