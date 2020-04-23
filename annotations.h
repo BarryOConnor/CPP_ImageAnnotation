@@ -2,8 +2,6 @@
 #define ANNOTATIONS_H
 #include "annotation.h"
 
-#include <QMutex>
-
 class QPolygonF;
 
 //!  Annotations class acts as a linked list.
