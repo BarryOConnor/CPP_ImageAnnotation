@@ -132,7 +132,8 @@ bool Annotations::deleteWithId(int varId){
             if (currNode == head) {
                 head = currNode->next;
             } else if (currNode == tail) {
-                tail = prevNode->next;
+                tail = prevNode;
+                prevNode->next = nullptr;
             } else {
                 prevNode->next = currNode->next;
             }
