@@ -56,54 +56,52 @@ void Controller::binarySearch(QVector<QPair<QString, QString>> *varContents, con
 }
 
 void Controller::bubbleSort(QVector<QPair<QString, QString>>& varContents, bool varDirection, int varColumn){
-/****************************************************
- * perform a bubblesort on a given table
- ***************************************************/
+    /****************************************************
+     * perform a bubblesort on a given table
+     ***************************************************/
+    //check there are any contents at all
+    if(varContents.length() < 1 )
+        throw std::invalid_argument("No contents in the vector to sort");
+
+
+
+
+    QPair<QString, QString> tempStore; //temporary storage for swap item
+    bool doSwap = false; // should we swap the items
+
     using size_type = QVector<QString>::size_type;
 
     for (size_type i = 1; i < varContents.size(); ++i) // for n-1 passes
     {
         for (size_type j = 0; j < (varContents.size() - 1); ++j)
         {
-            if (varDirection) { //ascending
-                QString compareFirst = "";
-                QString compareSecond = "";
-                if (varColumn == 0) { // sorting the first column
-                    compareFirst = varContents[j].first;
-                    compareSecond = varContents[j + 1].first;
+            doSwap = false;
+
+            // variables need to be declared inside the if statements since we could be dealing with a comparison of a date or a string
+            // sorting dates in string format just doesn't work correctly so we need to convert
+
+            if (varColumn == 0) { // sorting by the first column
+                QString compareFirst = varContents[j].first;
+                QString compareSecond = varContents[j + 1].first;
+
+                //if ascending comparison works one direction, descending the other direction
+                if ((compareFirst > compareSecond && varDirection) || (compareFirst < compareSecond && !varDirection)) {
+                    doSwap = true;
                 }
-                else { //sorting the second column
-                    compareFirst = varContents[j].second;
-                    compareSecond = varContents[j + 1].second;
-                }
-                if (compareFirst > compareSecond) {
-                    //swap items as needed
-                    QPair<QString, QString> temp = { varContents[j].first, varContents[j].second };
-                    varContents[j].first = varContents[j + 1].first;
-                    varContents[j].second = varContents[j + 1].second;
-                    varContents[j + 1].first = temp.first;
-                    varContents[j + 1].second = temp.second;
+
+            } else { //sorting by the second (date) column
+                QDateTime compareFirst = QDateTime::fromString(varContents[j].second, "dd/MM/yyyy hh:mm");
+                QDateTime compareSecond = QDateTime::fromString(varContents[j + 1].second, "dd/MM/yyyy hh:mm");
+
+                //if ascending comparison works one direction, descending the other direction
+                if ((compareFirst > compareSecond && varDirection) || (compareFirst < compareSecond && !varDirection)) {
+                    doSwap = true;
                 }
             }
-            else {  //descending
-                QString compareFirst = "";
-                QString compareSecond = "";
-                if (varColumn == 0) {// sorting the first column
-                    compareFirst = varContents[j].first;
-                    compareSecond = varContents[j + 1].first;
-                }
-                else {//sorting the second column
-                    compareFirst = varContents[j].second;
-                    compareSecond = varContents[j + 1].second;
-                }
-                if (compareFirst < compareSecond) {
-                    //swap items as needed
-                    QPair<QString, QString> temp = { varContents[j].first, varContents[j].second };
-                    varContents[j].first = varContents[j + 1].first;
-                    varContents[j].second = varContents[j + 1].second;
-                    varContents[j + 1].first = temp.first;
-                    varContents[j + 1].second = temp.second;
-                }
+            if(doSwap){
+                tempStore = varContents[j];
+                varContents[j] = varContents[j + 1];
+                varContents[j + 1] = tempStore;
             }
         }
     }
@@ -173,7 +171,7 @@ void Controller::btnLoadImages_clicked(){
  ***************************************************/
 
     //get the file name of the class
-    QStringList images = QFileDialog::getOpenFileNames(parent, "Open Image File", "", "Image Files (*.png *.jpg *.gif)");
+    QStringList images = QFileDialog::getOpenFileNames(parent, "Open Image File", "", "Image Files (*.png *.jpg *.gif *.tif *.bmp)");
 
     if (images.isEmpty())
         return; //do nothing if the user selects nothing
