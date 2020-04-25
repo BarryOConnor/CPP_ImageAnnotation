@@ -71,9 +71,9 @@ void Controller::bubbleSort(QVector<QPair<QString, QString>>& varContents, bool 
 
     using size_type = QVector<QString>::size_type;
 
-    for (size_type i = 1; i < varContents.size(); ++i) // for n-1 passes
+    for (size_type outerloop = 1; outerloop < varContents.size(); ++outerloop) // for n-1 passes
     {
-        for (size_type j = 0; j < (varContents.size() - 1); ++j)
+        for (size_type loopcount = 0; loopcount < (varContents.size() - 1); ++loopcount)
         {
             doSwap = false;
 
@@ -81,8 +81,8 @@ void Controller::bubbleSort(QVector<QPair<QString, QString>>& varContents, bool 
             // sorting dates in string format just doesn't work correctly so we need to convert
 
             if (varColumn == 0) { // sorting by the first column
-                QString compareFirst = varContents[j].first;
-                QString compareSecond = varContents[j + 1].first;
+                QString compareFirst = varContents[loopcount].first;
+                QString compareSecond = varContents[loopcount + 1].first;
 
                 //if ascending comparison works one direction, descending the other direction
                 if ((compareFirst > compareSecond && varDirection) || (compareFirst < compareSecond && !varDirection)) {
@@ -90,8 +90,8 @@ void Controller::bubbleSort(QVector<QPair<QString, QString>>& varContents, bool 
                 }
 
             } else { //sorting by the second (date) column
-                QDateTime compareFirst = QDateTime::fromString(varContents[j].second, "dd/MM/yyyy hh:mm");
-                QDateTime compareSecond = QDateTime::fromString(varContents[j + 1].second, "dd/MM/yyyy hh:mm");
+                QDateTime compareFirst = QDateTime::fromString(varContents[loopcount].second, "dd/MM/yyyy hh:mm");
+                QDateTime compareSecond = QDateTime::fromString(varContents[loopcount + 1].second, "dd/MM/yyyy hh:mm");
 
                 //if ascending comparison works one direction, descending the other direction
                 if ((compareFirst > compareSecond && varDirection) || (compareFirst < compareSecond && !varDirection)) {
@@ -99,9 +99,9 @@ void Controller::bubbleSort(QVector<QPair<QString, QString>>& varContents, bool 
                 }
             }
             if(doSwap){
-                tempStore = varContents[j];
-                varContents[j] = varContents[j + 1];
-                varContents[j + 1] = tempStore;
+                tempStore = varContents[loopcount];
+                varContents[loopcount] = varContents[loopcount + 1];
+                varContents[loopcount + 1] = tempStore;
             }
         }
     }
