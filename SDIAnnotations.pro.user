@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.11.2, 2020-04-19T07:10:04. -->
+<!-- Written by QtCreator 4.11.2, 2020-04-26T06:36:40. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -8,7 +8,7 @@
  </data>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
-  <value type="int">1</value>
+  <value type="int">0</value>
  </data>
  <data>
   <variable>ProjectExplorer.Project.EditorSettings</variable>
@@ -60,6 +60,38 @@
    </valuelist>
    <value type="bool" key="ClangCodeModel.UseGlobalConfig">false</value>
    <value type="QString" key="ClangCodeModel.WarningConfigId">{3da4b341-5d0e-4483-8b81-ce1707bf1df4}</value>
+   <valuemap type="QVariantMap" key="ClangTools">
+    <value type="bool" key="ClangTools.BuildBeforeAnalysis">true</value>
+    <value type="QString" key="ClangTools.DiagnosticConfig">Builtin.TidyAndClazy</value>
+    <value type="int" key="ClangTools.ParallelJobs">4</value>
+    <valuelist type="QVariantList" key="ClangTools.SelectedDirs">
+     <value type="QString">E:/GitHub/sdi-project/SDIAnnotations.pro</value>
+    </valuelist>
+    <valuelist type="QVariantList" key="ClangTools.SelectedFiles"/>
+    <valuelist type="QVariantList" key="ClangTools.SuppressedDiagnostics">
+     <valuemap type="QVariantMap">
+      <value type="QString" key="ClangTools.SuppressedDiagnosticFilePath">Model.cpp</value>
+      <value type="QString" key="ClangTools.SuppressedDiagnosticMessage">parameter 'varClasses' is passed by value and only copied once; consider moving it to avoid unnecessary copies [performance-unnecessary-value-param]</value>
+      <value type="int" key="ClangTools.SuppressedDiagnosticUniquifier">2</value>
+     </valuemap>
+     <valuemap type="QVariantMap">
+      <value type="QString" key="ClangTools.SuppressedDiagnosticFilePath">Annotation.cpp</value>
+      <value type="QString" key="ClangTools.SuppressedDiagnosticMessage">parameter 'varImage' is passed by value and only copied once; consider moving it to avoid unnecessary copies [performance-unnecessary-value-param]</value>
+      <value type="int" key="ClangTools.SuppressedDiagnosticUniquifier">2</value>
+     </valuemap>
+     <valuemap type="QVariantMap">
+      <value type="QString" key="ClangTools.SuppressedDiagnosticFilePath">Annotation.cpp</value>
+      <value type="QString" key="ClangTools.SuppressedDiagnosticMessage">parameter 'varClass' is passed by value and only copied once; consider moving it to avoid unnecessary copies [performance-unnecessary-value-param]</value>
+      <value type="int" key="ClangTools.SuppressedDiagnosticUniquifier">3</value>
+     </valuemap>
+     <valuemap type="QVariantMap">
+      <value type="QString" key="ClangTools.SuppressedDiagnosticFilePath">Annotation.cpp</value>
+      <value type="QString" key="ClangTools.SuppressedDiagnosticMessage">parameter 'varCoordinates' is passed by value and only copied once; consider moving it to avoid unnecessary copies [performance-unnecessary-value-param]</value>
+      <value type="int" key="ClangTools.SuppressedDiagnosticUniquifier">2</value>
+     </valuemap>
+    </valuelist>
+    <value type="bool" key="ClangTools.UseGlobalSettings">true</value>
+   </valuemap>
   </valuemap>
  </data>
  <data>
@@ -543,7 +575,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">E:/GitHub/build-SDIAnnotations-Desktop_Qt_5_14_2_MinGW_64_bit-Debug</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default"></value>
    </valuemap>
    <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">1</value>
   </valuemap>

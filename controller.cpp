@@ -42,7 +42,8 @@ void Controller::binarySearch(QVector<QPair<QString, QString>> *varContents, con
         int midPos = startPos + (endPos - startPos) / 2;
         int result = varContents->at(midPos).first.indexOf(searchTerm);
                 // Check if x is present at mid
-        if (result != -1) { view->tblImages->selectRow(midPos); tblImages_cellClicked(midPos);return; }
+        if (result != -1) {
+            view->tblImages->selectRow(midPos); tblImages_cellClicked(midPos);return; }
 
         // If x greater, ignore left half
         if (searchTerm > varContents->at(midPos).first) { startPos = midPos + 1; }
@@ -191,7 +192,7 @@ void Controller::btnLoadImages_clicked(){
 
         //populate the table
         populateTableView(view->tblImages, contents);
-
+        view->btnSearch->setEnabled(true);
     }
 }
 

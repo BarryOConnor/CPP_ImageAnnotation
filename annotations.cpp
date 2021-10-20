@@ -157,9 +157,9 @@ bool Annotations::updateAnnotation(int varId, QPolygonF varPosition){
     currNode = head;
     for(int loopCount = 0; loopCount <= length; loopCount ++){
         if(varId == currNode->id){
-            for(int loopCount = 0; loopCount < currNode->coordinates.size(); loopCount++){
-                currNode->coordinates[loopCount].setX(varPosition[loopCount].x());
-                currNode->coordinates[loopCount].setY(varPosition[loopCount].y());
+            currNode->coordinates.clear();
+            for(int loopCount = 0; loopCount < varPosition.size(); loopCount++){
+                currNode->coordinates.push_back(varPosition[loopCount]);
             }
             return true;
         }

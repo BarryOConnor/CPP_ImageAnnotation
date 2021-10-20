@@ -12,6 +12,7 @@ class controller;
 
 GraphicsScene::GraphicsScene()
 {
+    //initialise properties
     imageLoaded = false;
     maxPoints = 0;
     movingShape = -1;
@@ -63,12 +64,13 @@ void GraphicsScene::setShape(int varShape){
     const int TRAPEZIUM_MAX_POINTS = 4;
     const int POLYGON_MAX_POINTS = 8;
 
-
+    //set up the system to show we are drawing a new shape
     coords.clear();
     isNewShape = true;
     drawingMode = isDrawing;
     currentShape = varShape;
 
+    //set the max numbeer of vertices
     switch (varShape) {
     case Triangle:
         maxPoints = TRIANGLE_MAX_POINTS;
@@ -88,12 +90,13 @@ void GraphicsScene::setShape(int varShape){
 }
 
 void GraphicsScene::setColor(int varColor){
-
+    // change the colour
     currentColor = varColor;
 
 }
 
 void GraphicsScene::setMode(Modes varMode){
+    //set the drawing mode
     this->drawingMode = varMode;
 }
 
@@ -137,14 +140,19 @@ void GraphicsScene::reset()
 
 void GraphicsScene::deleteItem()
 {
-
+    //find the currently selected item in the graphics scene
     QList<QGraphicsItem *> allSelectedItems = selectedItems();
     for (QGraphicsItem *item : qAsConst(allSelectedItems)) {
         GraphicsPolygonItem * selectedPoly = qgraphicsitem_cast<GraphicsPolygonItem *>(item);
+        //let the controller know we are deleting it so it can update annotations
         emit annotationDeleted(selectedPoly->getId());
+        // remove the item from the graphics scene
         removeItem(selectedPoly);
         delete selectedPoly;
     }
+    //revert back to a new shape
+    isNewShape = true;
+    setMode(isMoving);
     update();
 }
 
@@ -152,6 +160,7 @@ void GraphicsScene::copyItem()
 {
     QList<QGraphicsItem *> selectedItems = this->selectedItems();
 
+    //find the currently selected item in the graphics scene
     for (QGraphicsItem *item : qAsConst(selectedItems)) {
         if (item->type() == GraphicsPolygonItem::Type){
             GraphicsPolygonItem * selectedPoly = qgraphicsitem_cast<GraphicsPolygonItem *>(item);
@@ -171,7 +180,8 @@ void GraphicsScene::copyItem()
             // update the polygon and scene
             currentPolygon->update();
             update();
-
+            isNewShape = true;
+            setMode(isMoving);
             //signal that a new shape has been completed
             emit annotationReady(annotation);
         }
@@ -182,11 +192,12 @@ void GraphicsScene::copyItem()
 void GraphicsScene::paintItem()
 {
     QList<QGraphicsItem *> selectedItems = this->selectedItems();
-
+    //find the currently selected item in the graphics scene
     for (QGraphicsItem *item : qAsConst(selectedItems)) {
         if (item->type() == GraphicsPolygonItem::Type){
             GraphicsPolygonItem * selectedPoly = qgraphicsitem_cast<GraphicsPolygonItem *>(item);
 
+               //update the colour of the current item to match the currently selected colour
             selectedPoly->setColor(currentColor);
             selectedPoly->update();
             update();
@@ -207,38 +218,46 @@ void GraphicsScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * varEvent)
 
 void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent * varEvent)
 {
-    if(varEvent->buttons() == Qt::LeftButton)
-           update();
+    if(varEvent->buttons() == Qt::LeftButton){
+        update();
+    }
     QGraphicsScene::mouseMoveEvent(varEvent);
 }
 
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent * varEvent)
 {
+    //some checks to make sure a class and image is selected before clicking and that the user is not right clicking
     if(!imageLoaded) { QMessageBox::information(nullptr, tr("Information"), "You must select an Image first"); return; }
     if(currentClass=="" && drawingMode==isDrawing) { QMessageBox::information(nullptr, tr("Information"), "You must select a Class first"); return; }
     if(coords.size() > maxPoints ) { QMessageBox::information(nullptr, tr("Information"), "The maximum number of points is " + QString::number(maxPoints)); return; }
     if(varEvent->buttons() != Qt::LeftButton) return;
 
 
-
+    // make sure we are in drawing mode and not just moving a shape
     if(drawingMode==isDrawing){
         if(isNewShape){
-
+            //if it's a new shape, create a new shape
             Annotation *annotation = new Annotation(currentId,currentClass, "",currentShape, currentColor,{});
 
             currentId ++;
             currentPolygon = new GraphicsPolygonItem(annotation, childPopupMenu, this);
+            //add to the scene (draw it)
             addItem(currentPolygon);
+
+            //signal that the annotation is ready to be stored
+            emit annotationReady(currentPolygon->getAnnotationInfo());
             isNewShape = false;
         }
+        //if not new, just add a point to the current shape
         currentPolygon->addPoint( varEvent->scenePos());
         currentPolygon->update();
         update();
+        //let the controller know we have updated the annotation
+        emit updateItem(currentPolygon->getId(), currentPolygon->getPolygon());
 
         coords.push_back(varEvent->scenePos());
         if(coords.size() == maxPoints){
             isNewShape = true;
-            emit annotationReady(currentPolygon->getAnnotationInfo());
             setMode(isMoving);
         }
     }
@@ -250,18 +269,21 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent * varEvent)
 void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * varEvent){
 
     if(movingShape!= -1){
+        //if a shape has indicated that it is being moved, do this
 
         QList<QGraphicsItem *> selectedItems = this->items();
-
+        //find the currently selected item in the graphics scene
         for (QGraphicsItem *item : qAsConst(selectedItems)) {
             if (item->type() == GraphicsPolygonItem::Type){
                 GraphicsPolygonItem * selectedPoly = qgraphicsitem_cast<GraphicsPolygonItem *>(item);
                 if(selectedPoly->getId()==movingShape){
                     QPolygonF mypoly = selectedPoly->polygon();
                     for(int loopCount = 0; loopCount < mypoly.size(); loopCount++){
+                        //get the new positions of the vertices
                         mypoly[loopCount] = selectedPoly->mapToScene(selectedPoly->polygon()[loopCount]);
-                        //qDebug() << mypoly;
+
                     }
+                    //let the controller know we need to update this shape
                     emit updateItem(selectedPoly->getId(), mypoly);
                 }
             }

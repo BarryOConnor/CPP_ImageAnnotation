@@ -169,7 +169,7 @@ public:
 
         btnSearch = new QPushButton(centralWidget);
         btnSearch->setObjectName(QString::fromUtf8("btnSearch"));
-
+        btnSearch->setEnabled(false);
         searchbar->addWidget(btnSearch);
 
 

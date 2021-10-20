@@ -91,6 +91,11 @@ void GraphicsPolygonItem::paint(QPainter *varPainter, const QStyleOptionGraphics
     varPainter->setPen(QPen(colorMap[color], 2, Qt::SolidLine, Qt::SquareCap, Qt::RoundJoin));
     varPainter->setBrush(Qt::transparent);
     varPainter->drawPolygon(polygon());
+
+
+    QFont font;
+    font.setPixelSize(14);
+    varPainter->setFont(font);
     QRectF measurements = boundingRect();
     varPainter->drawText(measurements.x(),measurements.y()-4,label);
 
